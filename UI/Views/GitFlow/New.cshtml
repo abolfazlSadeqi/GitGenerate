@@ -1,0 +1,211 @@
+﻿@using Core
+@model BranchRequest
+@{
+    ViewData["Title"] = "Generate GitFlow Branch";
+    var lang = ViewBag.Lang ?? "en";
+
+    // متن‌ها بر اساس زبان
+    var texts = new Dictionary<string, string>
+    {
+        // Titles
+        ["header"] = lang == "fa" ? "تولید شاخه GitFlow" : "GitFlow Branch Generator",
+        ["description"] = lang == "fa" ? "ساخت نام شاخه و تولید دستورات گیت — مطابق با Git Flow و Semantic Versioning"
+                                    : "Generate branch name and git commands — based on Git Flow and Semantic Versioning",
+
+        // Labels
+        ["branchType"] = lang == "fa" ? "نوع شاخه" : "Branch Type",
+        ["branchTypeHelp"] = lang == "fa" ? "انتخاب کنید که چه نوع شاخه‌ای می‌خواهید بسازید."
+                                        : "Select which type of branch you want to create.",
+
+        ["branchName"] = lang == "fa" ? "نام شاخه / توضیح" : "Branch Base Name / Description",
+        ["branchNameHelp"] = lang == "fa" ? "برای feature: نام کوتاه؛ برای release: می‌توانید شماره نسخه را قرار دهید (مثلاً 1.2.3) یا توضیح."
+                                       : "For feature: short name; for release: you can provide version number (e.g. 1.2.3) or description.",
+
+        ["branchFrom"] = lang == "fa" ? "شاخه منشأ (یکی یا چند مورد انتخاب کنید)" : "Branch From (choose one or more)",
+        ["branchFromHelp"] = lang == "fa" ? "جایی که شاخه جدید از آن منشعب می‌شود." : "The branch from which the new branch will be created.",
+
+        ["pushRemote"] = lang == "fa" ? "ارسال به ریموت؟" : "Push to remote?",
+        ["pushRemoteHelp"] = lang == "fa" ? "ارسال به origin (git push -u origin ...)" : "Push to origin (git push -u origin ...)",
+
+        ["releaseOptions"] = lang == "fa" ? "تنظیمات Release" : "Release options",
+        ["prevVersion"] = lang == "fa" ? "نسخه قبلی (دستی)" : "Previous version (manual)",
+        ["prevVersionHelp"] = lang == "fa" ? "عدد نسخه قبلی را وارد کنید یا از لیست نسخه‌ها انتخاب کنید." : "Enter previous version number or select from list.",
+        ["bumpType"] = lang == "fa" ? "نوع تغییر (یک مورد انتخاب کنید)" : "Bump type (choose one)",
+        ["preRelease"] = lang == "fa" ? "برچسب پیش‌نسخه" : "Pre-release label",
+        ["description"] = lang == "fa" ? "توضیح / یادداشت‌های Release" : "Description / Release notes",
+
+        ["preview"] = lang == "fa" ? "پیش‌نمایش / شاخه و تگ پیشنهادی" : "Preview / Suggested branch & tag",
+        ["generateBtn"] = lang == "fa" ? "تولید برنامه شاخه" : "Generate Branch Plan"
+    };
+}
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />
+
+<div class="container my-5">
+    <div class="card shadow p-4 rounded-4">
+        <h2>@texts["header"]</h2>
+        <p class="text-muted">@texts["description"]</p>
+
+        <form method="post" action="/GitFlow/Generate" class="mt-4" id="branchForm">
+            <input type="hidden" name="Lang" value="@lang" />
+            <div class="row g-3">
+                <div class="col-md-4">
+                    <label class="form-label">@texts["branchType"]</label>
+                    <select name="Type" id="typeSelect" class="form-select">
+                        <option value="feature">feature</option>
+                        <option value="release">release</option>
+                        <option value="hotfix">hotfix</option>
+                        <option value="develop">develop</option>
+                        <option value="main">main</option>
+                    </select>
+                    <div class="form-text">@texts["branchTypeHelp"]</div>
+                </div>
+
+                <div class="col-md-8">
+                    <label class="form-label">@texts["branchName"]</label>
+                    <input name="Name" id="nameInput" class="form-control" placeholder="e.g. login-improvement or 1.2.0" />
+                    <div class="form-text">@texts["branchNameHelp"]</div>
+                </div>
+
+                <div class="col-12">
+                    <label class="form-label">@texts["branchFrom"]</label>
+                    <div class="d-flex gap-3">
+                        <label class="form-check">
+                            <input class="form-check-input" type="checkbox" name="From" value="develop" checked /> <span class="form-check-label">develop</span>
+                        </label>
+                        <label class="form-check">
+                            <input class="form-check-input" type="checkbox" name="From" value="main" /> <span class="form-check-label">main</span>
+                        </label>
+                        <label class="form-check">
+                            <input class="form-check-input" type="checkbox" name="From" value="release" /> <span class="form-check-label">release</span>
+                        </label>
+                    </div>
+                    <div class="form-text">@texts["branchFromHelp"]</div>
+                </div>
+
+                <div class="col-md-6">
+                    <label class="form-label">@texts["pushRemote"]</label>
+                    <div class="form-check form-switch">
+                        <input class="form-check-input" type="checkbox" id="pushRemote" name="PushRemote" value="true" />
+                        <label class="form-check-label" for="pushRemote">@texts["pushRemoteHelp"]</label>
+                    </div>
+                </div>
+
+                <div class="col-12 border rounded p-3 bg-light release-block d-none">
+                    <h5>@texts["releaseOptions"]</h5>
+                    <div class="row g-2">
+                        <div class="col-md-4">
+                            <label class="form-label">@texts["prevVersion"]</label>
+                            <div class="d-flex gap-2">
+                                <input type="number" name="PrevMajor" id="prevMajor" class="form-control" min="0" value="0" />
+                                <input type="number" name="PrevMinor" id="prevMinor" class="form-control" min="0" value="0" />
+                                <input type="number" name="PrevPatch" id="prevPatch" class="form-control" min="0" value="0" />
+                            </div>
+                            <div class="form-text">@texts["prevVersionHelp"]</div>
+                        </div>
+
+                        <div class="col-md-4">
+                            <label class="form-label">@texts["bumpType"]</label>
+                            <div class="d-flex gap-2">
+                                <label class="form-check">
+                                    <input class="form-check-input bumpType" type="checkbox" name="ChangeTypes" value="major" /> Major
+                                </label>
+                                <label class="form-check">
+                                    <input class="form-check-input bumpType" type="checkbox" name="ChangeTypes" value="minor" /> Minor
+                                </label>
+                                <label class="form-check">
+                                    <input class="form-check-input bumpType" type="checkbox" name="ChangeTypes" value="patch" /> Patch
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="col-md-4">
+                            <label class="form-label">@texts["preRelease"]</label>
+                            <select name="PreReleaseLabel" id="preRelease" class="form-select">
+                                <option value="">None</option>
+                                <option value="alpha">alpha</option>
+                                <option value="beta">beta</option>
+                                <option value="rc">rc</option>
+                            </select>
+                        </div>
+
+                        <div class="col-12 mt-2">
+                            <label class="form-label">@texts["description"]</label>
+                            <textarea name="Description" class="form-control" rows="3"></textarea>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-12">
+                    <label class="form-label">@texts["preview"]</label>
+                    <input type="text" id="preview" class="form-control" readonly />
+                </div>
+
+                <div class="col-12 text-end">
+                    <button type="submit" class="btn btn-primary">@texts["generateBtn"]</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // نمایش بلاک تنظیمات مخصوص release زمانی که نوع release انتخاب می‌شود
+        const typeSelect = document.getElementById('typeSelect');
+        const releaseBlock = document.querySelector('.release-block');
+        const nameInput = document.getElementById('nameInput');
+        const preview = document.getElementById('preview');
+
+        function updateUI() {
+            if (typeSelect.value === 'release') {
+                releaseBlock.classList.remove('d-none');
+            } else {
+                releaseBlock.classList.add('d-none');
+            }
+            updatePreview();
+        }
+
+        function updatePreview() {
+            let type = typeSelect.value;
+            let name = nameInput.value.trim();
+            let branch = name;
+            if (!name) {
+                branch = type === 'feature' ? 'feature/your-name' :
+                         type === 'release' ? 'release/x.y.z' :
+                         type === 'hotfix' ? 'hotfix/your-hotfix' :
+                         type;
+            } else {
+                // if name looks like version and type==release then prefix release/
+                if (type === 'release' && /^\d+\.\d+\.\d+/.test(name)) branch = `release/${name}`;
+                else if (!name.includes('/')) branch = `${type}/${name}`;
+                else branch = name;
+            }
+
+            // preview tag for release based on bump checkboxes
+            let suggested = '';
+            if (type === 'release') {
+                const major = parseInt(document.getElementById('prevMajor').value||0);
+                const minor = parseInt(document.getElementById('prevMinor').value||0);
+                const patch = parseInt(document.getElementById('prevPatch').value||0);
+                const bumpChecks = Array.from(document.querySelectorAll('.bumpType:checked')).map(c=>c.value);
+                let newMajor=major, newMinor=minor, newPatch=patch;
+                if (bumpChecks.includes('major')) { newMajor++; newMinor=0; newPatch=0; }
+                else if (bumpChecks.includes('minor')) { newMinor++; newPatch=0; }
+                else { newPatch++; }
+                const pre = document.getElementById('preRelease').value;
+                suggested = `${newMajor}.${newMinor}.${newPatch}${pre?'-'+pre+'.1':''}`;
+            }
+
+            preview.value = `branch: ${branch}${suggested?('  | suggested tag: '+suggested):''}`;
+        }
+
+        document.addEventListener('input', updatePreview);
+        document.addEventListener('change', updatePreview);
+        updateUI();
+
+        typeSelect.addEventListener('change', updateUI);
+
+       
+    </script>
+}

@@ -1,0 +1,63 @@
+﻿@using Core
+@model GitHookModel
+
+@{
+    var lang = System.Globalization.CultureInfo.CurrentCulture.TwoLetterISOLanguageName.ToUpper();
+    var FA = lang == "FA";
+}
+
+<div class="container py-5">
+
+    <h1 class="text-center text-primary mb-4">
+        @(FA? Model.TitleFa: Model.TitleEn)
+    </h1>
+
+    <ul class="nav nav-tabs mb-3" id="hookTabs">
+        <li class="nav-item"><button class="nav-link active" data-bs-toggle="tab" data-bs-target="#overview">@((FA ? "نمای کلی" : "Overview"))</button></li>
+        <li class="nav-item"><button class="nav-link" data-bs-toggle="tab" data-bs-target="#activation">@((FA ? "فعال‌سازی" : "Activation"))</button></li>
+        <li class="nav-item"><button class="nav-link" data-bs-toggle="tab" data-bs-target="#allhooks">@((FA ? "تمام هوک‌ها" : "All Hooks"))</button></li>
+        <li class="nav-item"><button class="nav-link" data-bs-toggle="tab" data-bs-target="#mistakes">@((FA ? "اشتباهات" : "Mistakes"))</button></li>
+        <li class="nav-item"><button class="nav-link" data-bs-toggle="tab" data-bs-target="#best">@((FA ? "Best Practice" : "Best Practices"))</button></li>
+        <li class="nav-item"><button class="nav-link" data-bs-toggle="tab" data-bs-target="#examples">@((FA ? "نمونه‌ها" : "Examples"))</button></li>
+    </ul>
+
+    <div class="tab-content">
+
+        <div class="tab-pane fade show active" id="overview">
+            <div class="bg-light p-4 rounded" style="max-height:600px; overflow:auto;">
+                @Html.Raw(FA ? Model.TabOverviewFa : Model.TabOverviewEn)
+            </div>
+        </div>
+
+        <div class="tab-pane fade" id="activation">
+            <div class="bg-light p-4 rounded" style="max-height:600px; overflow:auto;">
+                @Html.Raw(FA ? Model.TabActivationFa : Model.TabActivationEn)
+            </div>
+        </div>
+
+        <div class="tab-pane fade" id="allhooks">
+            <div class="bg-light p-4 rounded" style="max-height:600px; overflow:auto;">
+                @Html.Raw(FA ? Model.TabAllHooksFa : Model.TabAllHooksEn)
+            </div>
+        </div>
+
+        <div class="tab-pane fade" id="mistakes">
+            <div class="bg-light p-4 rounded" style="max-height:600px; overflow:auto;">
+                @Html.Raw(FA ? Model.TabMistakesFa : Model.TabMistakesEn)
+            </div>
+        </div>
+
+        <div class="tab-pane fade" id="best">
+            <div class="bg-light p-4 rounded" style="max-height:600px; overflow:auto;">
+                @Html.Raw(FA ? Model.TabBestFa : Model.TabBestEn)
+            </div>
+        </div>
+
+        <div class="tab-pane fade" id="examples">
+            <div class="bg-light p-4 rounded" style="max-height:600px; overflow:auto;">
+                @Html.Raw(FA ? Model.TabExamplesFa : Model.TabExamplesEn)
+            </div>
+        </div>
+
+    </div>
+</div>

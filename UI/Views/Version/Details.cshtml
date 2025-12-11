@@ -1,0 +1,54 @@
+﻿@using Core
+@using Microsoft.AspNetCore.Html
+@model VersionDetail
+@{
+    string lang = ViewBag.Lang ?? "en";
+    ViewData["Title"] = $"Version {Model.Display}";
+}
+
+<div class="container my-5">
+    <a href="/versions" class="btn btn-outline-secondary mb-3">&larr; Back to Versions</a>
+
+    <div class="card shadow-sm p-4 rounded-4">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h2 class="fw-bold">Version @Model.Display</h2>
+            <span class="badge bg-primary p-2 rounded-3 text-white">Semantic Versioning</span>
+        </div>
+
+        <p class="text-muted">@((Model.Description.ContainsKey(lang) ? Model.Description[lang] : Model.Description["en"]))</p>
+        <p><strong>Created At:</strong> @Model.CreatedAt.ToString("yyyy-MM-dd HH:mm")</p>
+
+    </div>
+</div>
+@functions {
+    private Microsoft.AspNetCore.Html.IHtmlContent RenderAccordion(string title, Dictionary<string, List<string>> dict)
+    {
+        if (dict == null || dict.Count == 0) return new HtmlString("");
+
+        string id = "sec-" + Guid.NewGuid().ToString("N").Substring(0, 8);
+        string lang = ViewBag.Lang as string ?? "en";
+
+        // تبدیل صریح به List<string>
+        List<string> list;
+        if (!dict.TryGetValue(lang, out list))
+            list = dict.ContainsKey("en") ? dict["en"] : new List<string>();
+
+        if (list == null || list.Count == 0) return new HtmlString("");
+
+        var items = string.Join("", list.Select(i => $"<li>{i}</li>"));
+
+        string html = $@"
+        <div class='accordion-item'>
+            <h2 class='accordion-header' id='heading-{id}'>
+                <button class='accordion-button collapsed' type='button' data-bs-toggle='collapse' data-bs-target='#{id}' aria-expanded='false'>
+                    {title} <span class='ms-2 badge bg-secondary'>{list.Count}</span>
+                </button>
+            </h2>
+            <div id='{id}' class='accordion-collapse collapse'>
+                <div class='accordion-body'><ul>{items}</ul></div>
+            </div>
+        </div>";
+
+        return new HtmlString(html);
+    }
+}

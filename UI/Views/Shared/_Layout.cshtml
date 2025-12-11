@@ -1,0 +1,239 @@
+﻿@using Microsoft.AspNetCore.Localization
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+
+@{
+    var lang = System.Globalization.CultureInfo.CurrentUICulture.Name;
+    var isRtl = lang.StartsWith("fa");
+}
+
+<!DOCTYPE html>
+<html lang="@lang" dir="@(isRtl ? "rtl" : "ltr")">
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Git Command Builder</title>
+
+    <link href="~/lib/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet" />
+    <link href="~/css/site.css" rel="stylesheet" />
+
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-dark bg-dark fixed-top d-flex justify-content-between">
+        <button class="btn btn-outline-light d-lg-none" id="menuToggle"><i class="bi bi-list fs-3"></i></button>
+        <span class="navbar-brand fw-bold"><i class="bi bi-git"></i> Git Version Manager</span>
+
+        <!-- Language Selector -->
+        <form asp-controller="Home" asp-action="SetLanguage" method="post" class="d-flex">
+            <select name="culture" class="form-select form-select-sm" onchange="this.form.submit()">
+                <option value="fa-IR" selected="@(isRtl ? "selected" : null)">فارسی</option>
+                <option value="en-US" selected="@(isRtl ? null : "selected")">English</option>
+            </select>
+        </form>
+    </nav>
+
+    <!-- Sidebar -->
+    <!-- Sidebar -->
+    <div class="sidebar" id="sidebarMenu">
+        
+        <ul class="nav flex-column">
+            <!-- Git Management -->
+            <li class="nav-item">
+                <a class="nav-link" data-bs-toggle="collapse" href="#gitManagement">@Localizer["Git Management"]</a>
+                <div id="gitManagement" class="collapse ms-3">
+                    <a asp-controller="GitConcept" asp-action="List" class="nav-link">@Localizer["Base Concept"]</a>
+                    <a asp-controller="GitIgnore" asp-action="Index" class="nav-link">@Localizer["GitIgnore"]</a>
+                    <a asp-controller="GitFlow" asp-action="Index" class="nav-link">@Localizer["GitFlow"]</a>
+                    <a asp-controller="GitFlow" asp-action="New" class="nav-link">@Localizer["GitFlowNew"]</a>
+
+                    <a asp-controller="GitConcept" asp-action="bestPractice" class="nav-link">@Localizer["bestPractice"]</a>
+                    <a asp-controller="GitConcept" asp-action="Standards" class="nav-link">@Localizer["Standards"]</a>
+
+                    <a asp-controller="LargeFiles" asp-action="Index" class="nav-link">@Localizer["LargeFiles"]</a>
+                    <a asp-controller="GitInternals" asp-action="Index" class="nav-link">@Localizer["GitInternals"]</a>
+
+                    
+                </div>
+            </li>
+
+            <!-- Version Management -->
+            <li class="nav-item">
+                <a class="nav-link" data-bs-toggle="collapse" href="#versionManagement">@Localizer["Version Management"]</a>
+                <div id="versionManagement" class="collapse ms-3">
+                    <a asp-controller="Version" asp-action="Index" class="nav-link">@Localizer["VersionIndex"]</a>
+                    <a asp-controller="Version" asp-action="New" class="nav-link">@Localizer["VersionNew"]</a>
+                    <a asp-controller="GitResources" asp-action="Index" class="nav-link">@Localizer["Resources"]</a>
+                    <a asp-controller="GitTag" asp-action="Create" class="nav-link">@Localizer["Tag"]</a>
+                </div>
+            </li>
+
+            <li class="nav-item">
+                <a class="nav-link" data-bs-toggle="collapse" href="#Hook_Scripts">@Localizer["Hook_Scripts"]</a>
+                <div id="Hook_Scripts" class="collapse ms-3">
+                    <a asp-controller="GitHook" asp-action="Index" class="nav-link">@Localizer["GitHook"]</a>
+                    <a asp-controller="GitScripts" asp-action="Index" class="nav-link">@Localizer["GitScripts"]</a>
+                    <a asp-controller="GitConflict" asp-action="Index" class="nav-link">@Localizer["GitConflict"]</a>
+
+                </div>
+            </li>
+
+
+            <!-- Commit and Branch Management -->
+            <li class="nav-item">
+                <a class="nav-link" data-bs-toggle="collapse" href="#commitBranchManagement">@Localizer["Commit & Branch Management"]</a>
+                <div id="commitBranchManagement" class="collapse ms-3">
+                    <a asp-controller="Commit" asp-action="Index" class="nav-link">@Localizer["Commit"]</a>
+                    <a asp-controller="GitSubmodule" asp-action="Index" class="nav-link">@Localizer["GitSubmodule"]</a>
+                    <a asp-controller="Clone" asp-action="Index" class="nav-link">@Localizer["GitClone"]</a>
+                    <a asp-controller="Add" asp-action="Index" class="nav-link">@Localizer["GitAdd"]</a>
+                    <a asp-controller="Branch" asp-action="Index" class="nav-link">@Localizer["GitBranch"]</a>
+                    <a asp-controller="Merge" asp-action="Index" class="nav-link">@Localizer["GitMerge"]</a>
+                </div>
+            </li>
+
+            <!-- Checkout and Fetch -->
+            <li class="nav-item">
+                <a class="nav-link" data-bs-toggle="collapse" href="#checkoutFetch">@Localizer["Checkout & Fetch"]</a>
+                <div id="checkoutFetch" class="collapse ms-3">
+                    <a asp-controller="Checkout" asp-action="Index" class="nav-link">@Localizer["GitCheckout"]</a>
+                    <a asp-controller="Fetch" asp-action="Index" class="nav-link">@Localizer["GitFetch"]</a>
+                    <a asp-controller="pull" asp-action="Index" class="nav-link">@Localizer["Gitpull"]</a>
+                </div>
+            </li>
+
+            <!-- Rebase and Stash -->
+            <li class="nav-item">
+                <a class="nav-link" data-bs-toggle="collapse" href="#rebaseStash">@Localizer["Rebase & Stash"]</a>
+                <div id="rebaseStash" class="collapse ms-3">
+                    <a asp-controller="Rebase" asp-action="Index" class="nav-link">@Localizer["GitRebase"]</a>
+                    <a asp-controller="Stash" asp-action="Index" class="nav-link">@Localizer["GitStash"]</a>
+                </div>
+            </li>
+
+            <!-- Reset, Log, Diff -->
+            <li class="nav-item">
+                <a class="nav-link" data-bs-toggle="collapse" href="#resetLogDiff">@Localizer["Reset, Log & Diff"]</a>
+                <div id="resetLogDiff" class="collapse ms-3">
+                    <a asp-controller="Reset" asp-action="Index" class="nav-link">@Localizer["GitReset"]</a>
+                    <a asp-controller="Log" asp-action="Index" class="nav-link">@Localizer["GitLog"]</a>
+                    <a asp-controller="Diff" asp-action="Index" class="nav-link">@Localizer["GitDiff"]</a>
+                </div>
+            </li>
+
+            <!-- Remote & Config -->
+            <li class="nav-item">
+                <a class="nav-link" data-bs-toggle="collapse" href="#remoteConfig">@Localizer["Remote & Config"]</a>
+                <div id="remoteConfig" class="collapse ms-3">
+                    <a asp-controller="Remote" asp-action="Index" class="nav-link">@Localizer["GitRemote"]</a>
+                    <a asp-controller="Config" asp-action="Index" class="nav-link">@Localizer["GitConfig"]</a>
+                </div>
+            </li>
+
+            <!-- Init, Rm, Mv -->
+            <li class="nav-item">
+                <a class="nav-link" data-bs-toggle="collapse" href="#initRmMv">@Localizer["Init, Rm & Mv"]</a>
+                <div id="initRmMv" class="collapse ms-3">
+                    <a asp-controller="init" asp-action="Index" class="nav-link">@Localizer["Gitinit"]</a>
+                    <a asp-controller="rm" asp-action="Index" class="nav-link">@Localizer["Gitrm"]</a>
+                    <a asp-controller="mv" asp-action="Index" class="nav-link">@Localizer["Gitmv"]</a>
+                </div>
+            </li>
+
+            <!-- Clean, Status -->
+            <li class="nav-item">
+                <a class="nav-link" data-bs-toggle="collapse" href="#cleanStatus">@Localizer["Clean & Status"]</a>
+                <div id="cleanStatus" class="collapse ms-3">
+                    <a asp-controller="Clean" asp-action="Index" class="nav-link">@Localizer["GitClean"]</a>
+                    <a asp-controller="Status" asp-action="Index" class="nav-link">@Localizer["GitStatus"]</a>
+                </div>
+            </li>
+
+            <!-- Show, Help -->
+            <li class="nav-item">
+                <a class="nav-link" data-bs-toggle="collapse" href="#showHelp">@Localizer["Show & Help"]</a>
+                <div id="showHelp" class="collapse ms-3">
+                    <a asp-controller="Show" asp-action="Index" class="nav-link">@Localizer["GitShow"]</a>
+                    <a asp-controller="Help" asp-action="Index" class="nav-link">@Localizer["GitHelp"]</a>
+                </div>
+            </li>
+
+            <!-- Additional Git Commands -->
+            <li class="nav-item">
+                <a class="nav-link" data-bs-toggle="collapse" href="#additionalGitCommands">@Localizer["Additional Git Commands"]</a>
+                <div id="additionalGitCommands" class="collapse ms-3">
+                    <a asp-controller="Am" asp-action="Index" class="nav-link">@Localizer["GitAm"]</a>
+                    <a asp-controller="archive" asp-action="Index" class="nav-link">@Localizer["Gitarchive"]</a>
+                    <a asp-controller="Bisect" asp-action="Index" class="nav-link">@Localizer["GitBisect"]</a>
+                    <a asp-controller="reflog" asp-action="Index" class="nav-link">@Localizer["Gitreflog"]</a>
+                    <a asp-controller="blame" asp-action="Index" class="nav-link">@Localizer["Gitblame"]</a>
+                    <a asp-controller="Cherrypick" asp-action="Index" class="nav-link">@Localizer["Gitcherry-pick"]</a>
+                    <a asp-controller="shortlog" asp-action="Index" class="nav-link">@Localizer["Gitshortlog"]</a>
+                    <a asp-controller="updateindex" asp-action="Index" class="nav-link">@Localizer["Gitupdate-index"]</a>
+                </div>
+            </li>
+        </ul>
+    </div>
+
+    <!-- Main Content -->
+    <div class="content">
+        @Html.Partial("_Error.cshtml")
+        @RenderBody()
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <div>
+            <a href="mailto:abolfazalsadeqi@gmail.com" class="text-white text-decoration-none mx-2">Contact</a> |
+            <a href="https://github.com/abolfazlSadeqi/GitGenerate" target="_blank" class="text-white text-decoration-none mx-2">GitHub</a> |
+            <a href="https://github.com/abolfazlSadeqi/GitGenerate" target="_blank" class="text-white text-decoration-none mx-2">Contribute</a>
+        </div>
+    </footer>
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const menuToggle = document.getElementById("menuToggle");
+            const sidebar = document.getElementById("sidebarMenu");
+            const body = document.body;
+
+            function setSidebarTransform() {
+                const isRtl = document.documentElement.dir === "rtl";
+                if (window.innerWidth < 992) {
+                    if (!sidebar.classList.contains("open")) {
+                        sidebar.style.transform = isRtl ? "translateX(100%)" : "translateX(-100%)";
+                    }
+                } else {
+                    sidebar.style.transform = "none";
+                    sidebar.classList.remove("open");
+                    body.classList.remove("overlay-active");
+                }
+            }
+
+            // برای باز و بسته کردن منو
+            menuToggle.addEventListener("click", function () {
+                const isRtl = document.documentElement.dir === "rtl";
+                sidebar.classList.toggle("open");
+
+                if (sidebar.classList.contains("open")) {
+                    sidebar.style.transform = "translateX(0)";
+                    body.classList.add("overlay-active");
+                } else {
+                    sidebar.style.transform = isRtl ? "translateX(100%)" : "translateX(-100%)";
+                    body.classList.remove("overlay-active");
+                }
+            });
+
+            // برای تنظیم مجدد transform در هنگام تغییر سایز
+            window.addEventListener("resize", setSidebarTransform);
+            setSidebarTransform();
+        });
+    </script>
+
+
+    @RenderSection("Scripts", required: false)
+</body>
+</html>

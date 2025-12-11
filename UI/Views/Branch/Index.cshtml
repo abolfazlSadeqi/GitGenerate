@@ -1,0 +1,86 @@
+﻿@using System.Globalization
+@using Core
+@model BranchCommandModel
+@{
+    var lang = CultureInfo.CurrentCulture.TwoLetterISOLanguageName.ToUpper();
+    var FA = lang == "FA";
+}
+
+<div class="container py-5">
+    <h1 class="text-center mb-4 text-primary">@((FA) ? Model.TitleFa : Model.TitleEn)</h1>
+
+    <ul class="nav nav-tabs">
+        <li class="nav-item"><button class="nav-link active" data-bs-toggle="tab" data-bs-target="#builder">@((FA) ? "ساخت دستور" : "Command Builder")</button></li>
+        <li class="nav-item"><button class="nav-link" data-bs-toggle="tab" data-bs-target="#guide">@((FA) ? "راهنما" : "Guide")</button></li>
+    </ul>
+
+    <div class="tab-content mt-4">
+        <div class="tab-pane fade show active" id="builder">
+            <form id="branchForm" class="row g-3">
+                @foreach (var field in Model.Fields)
+                {
+                    <div class="col-md-6">
+                        <label class="form-label">@((FA) ? field.LabelFa : field.LabelEn)</label>
+                        @if (field.Type == "text")
+                        {
+                            <input type="text" name="@field.Name" class="form-control" placeholder="@((FA) ? field.PlaceholderFa : field.PlaceholderEn)" />
+                        }
+                        else if (field.Type == "checkbox")
+                        {
+                            <div class="form-check">
+                                <input type="checkbox" class="form-check-input" name="@field.Name" id="@field.Name" />
+                            </div>
+                        }
+                    </div>
+                }
+                <div class="col-12 text-end">
+                    <button type="button" class="btn btn-primary" id="generateBtn">@((FA) ? "تولید دستور" : "Generate Command")</button>
+                </div>
+            </form>
+
+            <div class="mt-4">
+                <h5>@(FA ? "پیش‌نمایش دستور" : "Command Preview")</h5>
+                <pre class="bg-dark text-success p-3 rounded" id="cmdPreview"></pre>
+            </div>
+        </div>
+
+        <div class="tab-pane fade" id="guide">
+            <div class="p-3 bg-light rounded" style="max-height:600px;overflow:auto;">
+                @Html.Raw(FA ? Model.GuideHtmlFa : Model.GuideHtmlEn)
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        document.addEventListener('DOMContentLoaded', function(){
+            const btn = document.getElementById('generateBtn');
+            const preview = document.getElementById('cmdPreview');
+            const form = document.getElementById('branchForm');
+
+            btn.addEventListener('click', function(){
+                const data = new FormData(form);
+                let cmd = "git branch";
+
+                if(data.get("Delete")) cmd += " -d";
+                if(data.get("ForceDelete")) cmd += " -D";
+                if(data.get("Rename")) {
+                    let oldName = data.get("RenameOld") || "";
+                    let newName = data.get("RenameNew") || "";
+                    if(oldName && newName) cmd += ` -m ${oldName} ${newName}`;
+                }
+                if(data.get("AllBranches")) cmd += " -a";
+                if(data.get("RemoteBranches")) cmd += " -r";
+                if(data.get("Verbose")) cmd += " -v";
+                if(data.get("Merged")) cmd += " --merged";
+                if(data.get("NoMerged")) cmd += " --no-merged";
+
+                const branchName = data.get("BranchName");
+                if(branchName && !data.get("Rename")) cmd += ` ${branchName}`;
+
+                preview.textContent = cmd;
+            });
+        });
+    </script>
+}

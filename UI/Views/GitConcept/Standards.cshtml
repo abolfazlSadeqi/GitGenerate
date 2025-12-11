@@ -1,0 +1,144 @@
+﻿@using System.Globalization
+@model Core.GitStandardsModel
+@{
+    Layout = "_Layout";
+    var lang = CultureInfo.CurrentCulture.TwoLetterISOLanguageName.ToUpper();
+    var FA = lang == "FA" || Model.Language == "FA";
+}
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+
+<div class="container-fluid py-4">
+    <div class="row">
+        <div class="col-12 mb-3 d-flex justify-content-between align-items-center">
+            <h2 class="mb-0">@((FA) ? "دستورالعمل‌های گیت — سازمانی (Enterprise)" : "Git Standards — Enterprise")</h2>
+        </div>
+    </div>
+
+    <div class="row gx-4">
+        <div class="col-lg-3 d-none d-lg-block">
+            <div class="card sticky-top" style="top:80px;">
+                <div class="card-body">
+                    <h6>@((FA) ? "فهرست بخش‌ها" : "Sections")</h6>
+                    <input id="searchTabs" class="form-control form-control-sm mb-2" placeholder="@((FA) ? "جستجوی تب..." : "Search tabs...")" />
+                    <div class="list-group" id="tabsList" role="tablist">
+                        @for (int i = 0; i < Model.Tabs.Count; i++)
+                        {
+                            var t = Model.Tabs[i];
+                            <a class="list-group-item list-group-item-action @(i == 0 ? "active" : "")" data-bs-toggle="list" href="#@t.Id" role="tab">@((FA) ? t.TitleFa : t.TitleEn)</a>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-9">
+            <div class="card">
+                <div class="card-body">
+                    <div class="tab-content" id="tabsContent">
+                        @for (int i = 0; i < Model.Tabs.Count; i++)
+                        {
+                            var t = Model.Tabs[i];
+                            <div class="tab-pane fade @(i == 0 ? "show active" : "")" id="@t.Id" role="tabpanel">
+                                <div class="d-flex justify-content-between align-items-start mb-2">
+                                    <div>
+                                        <h3 class="mb-1">@((FA) ? t.TitleFa : t.TitleEn)</h3>
+                                        <small class="text-muted">@((FA) ? "بخش توضیحات کامل" : "Detailed guidance and policy")</small>
+                                    </div>
+                                </div>
+
+                                <div id="meta-@t.Id" class="collapse mb-2">
+                                    <div class="alert alert-info small mb-0">@((FA) ? "این بخش شامل سیاست‌ها، محدودیت‌ها، مثال‌ها و بهترین روش‌هاست." : "This section contains policies, limitations, examples and best practices.")</div>
+                                </div>
+
+                                <div id="content-@t.Id" class="standards-content border rounded p-3 mb-3">
+                                    @Html.Raw((FA ? t.ContentFa : t.ContentEn))
+                                </div>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        (function(){
+
+            // Language toggle (client-side only; prefers server culture if reloaded)
+            var langEn = document.getElementById('langEn');
+            if(langEn){
+                langEn.addEventListener('click', function(){ setLang('EN'); });
+            }
+
+            var langFa = document.getElementById('langFa');
+            if(langFa){
+                langFa.addEventListener('click', function(){ setLang('FA'); });
+            }
+
+            function setLang(l){
+                document.cookie = 'PreferredLang=' + l + ';path=/';
+                location.reload();
+            }
+
+            // Copy handler
+            document.querySelectorAll('.copy-btn').forEach(function(btn){
+                btn.addEventListener('click', function(){
+                    var target = document.querySelector(this.getAttribute('data-target'));
+                    if(!target) return;
+                    var text = target.innerText || target.textContent;
+                    navigator.clipboard.writeText(text).then(function(){
+                        btn.classList.add('btn-success');
+                        btn.innerText = '@(FA ? "کپی شد" : "Copied")';
+                        setTimeout(function(){
+                            btn.classList.remove('btn-success');
+                            btn.innerText = '@(FA ? "کپی" : "Copy")';
+                        }, 1500);
+                    }, function(){
+                        alert('@(FA ? "کپی ناموفق" : "Copy failed")');
+                    });
+                });
+            });
+
+            // Search sidebar tabs
+            var search = document.getElementById('searchTabs');
+            if(search){
+                search.addEventListener('input', function(){
+                    var q = this.value.trim().toLowerCase();
+                    document.querySelectorAll('#tabsList a').forEach(function(a){
+                        var txt = a.textContent.toLowerCase();
+                        a.style.display = (txt.indexOf(q) !== -1) ? '' : 'none';
+                    });
+                });
+            }
+
+            // Make list items click activate corresponding tab
+            document.querySelectorAll('#tabsList a').forEach(function(a){
+                a.addEventListener('click', function(e){
+                    e.preventDefault();
+                    var selector = this.getAttribute('href');
+                    var tabEl = document.querySelector(selector);
+                    if(!tabEl) return;
+                    document.querySelectorAll('.tab-pane').forEach(tp => tp.classList.remove('show','active'));
+                    tabEl.classList.add('show','active');
+                    document.querySelectorAll('#tabsList a').forEach(x=>x.classList.remove('active'));
+                    this.classList.add('active');
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                });
+            });
+
+            // Export PDF placeholder
+            var exportPdf = document.getElementById('exportPdf');
+            if(exportPdf){
+                exportPdf.addEventListener('click', function(){
+                    alert('@(FA ? "برای خروجی PDF از گزینه Print مرورگر استفاده کنید (Save as PDF)." : "Use your browser Print -> Save as PDF to export this page.")');
+                    window.print();
+                });
+            }
+
+        })();
+    </script>
+}

@@ -1,0 +1,231 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+	<resheader name="resmimetype">
+		<value>text/microsoft-resx</value>
+	</resheader>
+	<resheader name="version">
+		<value>2.0</value>
+	</resheader>
+	<resheader name="reader">
+		<value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+	</resheader>
+	<resheader name="writer">
+		<value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+	</resheader>
+	<data name="BaseConcept" xml:space="preserve">
+    <value>مفاهیم پایه</value>
+  </data>
+	<data name="GitIgnore" xml:space="preserve">
+    <value>GitIgnore</value>
+  </data>
+	<data name="GitFlow" xml:space="preserve">
+    <value>GitFlow</value>
+  </data>
+	<data name="VersionNew" xml:space="preserve">
+    <value>VersionNew</value>
+  </data>
+
+	<data name="VersionIndex" xml:space="preserve">
+    <value>VersionIndex</value>
+  </data>
+
+
+	<data name="Resources" xml:space="preserve">
+    <value>منابع آموزشی</value>
+  </data>
+
+	<data name="Tag" xml:space="preserve">
+    <value>Tag </value>
+  </data>
+
+	<data name="GitFlowNew" xml:space="preserve">
+    <value>GitFlow New </value>
+  </data>
+
+	<data name="Commit" xml:space="preserve">
+    <value>کامیت استاندار </value>
+  </data>
+	<data name="GitSubmodule" xml:space="preserve">
+    <value>ساب ماژول </value>
+  </data>
+	<data name="GitClone" xml:space="preserve">
+    <value>دستورات Clone</value>
+  </data>
+
+	<data name="GitAdd" xml:space="preserve">
+    <value>دستورات Add</value>
+  </data>
+
+	<data name="GitBranch" xml:space="preserve">
+    <value>دستورات Branch</value>
+  </data>
+
+	<data name="GitCommit" xml:space="preserve">
+    <value>دستورات Commit</value>
+  </data>
+
+	<data name="GitMerge" xml:space="preserve">
+    <value>دستورات Merge</value>
+  </data>
+
+
+
+	<data name="GitCheckout" xml:space="preserve">
+    <value>دستورات Checkout</value>
+  </data>
+
+
+	<data name="GitFetch" xml:space="preserve">
+    <value>دستورات Fetch</value>
+  </data>
+	<data name="Gitpull" xml:space="preserve">
+    <value>دستورات pull</value>
+  </data>
+	<data name="Gitpull" xml:space="preserve">
+    <value>دستورات pull</value>
+  </data>
+	<data name="GitRebase" xml:space="preserve">
+    <value>دستورات Rebase</value>
+  </data>
+	<data name="GitStash" xml:space="preserve">
+    <value>دستورات Stash</value>
+  </data>
+
+
+
+	<data name="GitReset" xml:space="preserve">
+    <value>دستورات Reset</value>
+  </data>
+
+	<data name="GitLog" xml:space="preserve">
+    <value>دستورات Log</value>
+  </data>
+
+
+	<data name="GitDiff" xml:space="preserve">
+    <value>دستورات Diff</value>
+  </data>
+
+
+	<data name="GitRemote" xml:space="preserve">
+    <value>دستورات Remote</value>
+  </data>
+
+
+	<data name="Gitinit" xml:space="preserve">
+    <value>دستورات init</value>
+  </data>
+	<data name="Gitrm" xml:space="preserve">
+    <value>دستورات rm</value>
+  </data>
+	<data name="Gitmv" xml:space="preserve">
+    <value>دستورات mv</value>
+  </data>
+
+
+	<data name="GitClean" xml:space="preserve">
+    <value>دستورات Clean</value>
+  </data>
+	<data name="GitStatus" xml:space="preserve">
+    <value>دستورات Status</value>
+  </data>
+	<data name="GitConfig" xml:space="preserve">
+    <value>دستورات Config</value>
+  </data>
+
+
+	<data name="GitShow" xml:space="preserve">
+    <value>دستورات Show</value>
+  </data>
+
+	<data name="GitHelp" xml:space="preserve">
+    <value>دستورات Help</value>
+  </data>
+
+	<data name="GitAm" xml:space="preserve">
+    <value>دستورات Am</value>
+  </data>
+
+
+
+
+	<data name="Gitarchive" xml:space="preserve">
+    <value>دستورات archive</value>
+  </data>
+
+	<data name="GitBisect" xml:space="preserve">
+    <value>دستورات Bisect</value>
+  </data>
+
+	<data name="Gitreflog" xml:space="preserve">
+    <value>دستورات reflog</value>
+  </data>
+
+	<data name="Gitshortlog" xml:space="preserve">
+    <value>دستورات shortlog</value>
+  </data>
+
+	<data name="Gitupdate-index" xml:space="preserve">
+    <value>دستورات update-index</value>
+  </data>
+
+	<data name="Gitcherry-pick" xml:space="preserve">
+    <value>دستورات cherry-pick</value>
+  </data>
+
+	<data name="Gitreblame" xml:space="preserve">
+    <value>دستورات blame</value>
+  </data>
+
+
+	<data name="Git Management" xml:space="preserve">
+    <value> Git Management</value>
+  </data>
+
+	<data name="Git Operations" xml:space="preserve">
+    <value>Git Operations</value>
+  </data>
+
+
+	<data name="Auxiliary Commands" xml:space="preserve">
+    <value> Auxiliary Commands</value>
+  </data>
+
+	<data name="Utilities" xml:space="preserve">
+    <value> Utilities </value>
+  </data>
+
+	<data name="bestPractice" xml:space="preserve">
+    <value> bestPractice </value>
+  </data>
+	<data name="Standards" xml:space="preserve">
+    <value> Standards </value>
+  </data>
+
+
+	<data name="LargeFiles" xml:space="preserve">
+    <value> LargeFiles </value>
+  </data>
+
+	<data name="GitInternals" xml:space="preserve">
+    <value>  مفاهیم پایه گیت </value>
+  </data>
+
+	<data name="Hook_Scripts " xml:space="preserve">
+    <value>  Hook Scripts </value>
+  </data>
+	
+	<data name="GitHook" xml:space="preserve">
+    <value>  Hook </value>
+  </data>
+
+	<data name="GitScripts" xml:space="preserve">
+    <value> اسکریپت های پرکاربرد</value>
+  </data>
+
+	<data name="GitConflict" xml:space="preserve">
+    <value> Conflict</value>
+  </data>
+	
+	
+</root>

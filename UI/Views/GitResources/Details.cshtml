@@ -1,0 +1,14 @@
+﻿@using Core
+
+@model GitResource
+@{
+    string lang = ViewBag.Lang ?? "en";
+}
+
+<div class="container py-4">
+    <a class="btn btn-link" href="/GitResources?lang=@lang">@(lang == "FA" ? "بازگشت" : "Back")</a>
+    <h2>@Model.SiteName</h2>
+    <p><strong>@(lang == "FA" ? "دسته:" : "Category:")</strong> @Model.Category</p>
+    <p><strong>@(lang == "FA" ? "شرح:" : "Description:")</strong> @Model.Description</p>
+    <p><strong>@(lang == "FA" ? "آدرس:" : "URL:")</strong> <a href="@Model.Url" target="_blank">@Model.Url</a></p>
+</div>

@@ -1,0 +1,240 @@
+﻿@using Core
+@using System.Globalization
+@model GitTagModel
+@{
+    Layout = "_Layout";
+    var lang = CultureInfo.CurrentCulture.TwoLetterISOLanguageName.ToUpper();
+    if (lang != "FA") lang = "EN";
+
+    var descEN = (string)ViewData["DescriptionEN"];
+    var descFA = (string)ViewData["DescriptionFA"];
+}
+
+<div class="container py-5">
+    <h1 class="mb-5 text-center text-primary fw-bold">
+        @((lang == "FA") ? "سازنده تگ گیت حرفه‌ای" : "Professional Git Tag Builder")
+    </h1>
+
+    <!-- Tabs -->
+    <ul class="nav nav-pills mb-4 justify-content-center" id="gitTab" role="tablist">
+        <li class="nav-item" role="presentation">
+            <button class="nav-link active" id="create-tab" data-bs-toggle="tab" data-bs-target="#create" type="button" role="tab">
+                @((lang == "FA") ? "ساخت تگ" : "Create Tag")
+            </button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="guide-tab" data-bs-toggle="tab" data-bs-target="#guide" type="button" role="tab">
+                @((lang == "FA") ? "راهنما" : "Guide")
+            </button>
+        </li>
+    </ul>
+
+    <!-- Tab Content -->
+    <div class="tab-content">
+        <!-- Create Tag -->
+        <div class="tab-pane fade show active" id="create" role="tabpanel">
+            <form method="post" asp-action="Create" class="row g-4">
+                <input type="hidden" name="Language" value="@lang" />
+
+                <!-- Card: Branch & Tag Name -->
+                <div class="card p-3 shadow-sm mb-4">
+                    <h5 class="card-title">@((lang == "FA") ? "اطلاعات پایه" : "Basic Info")</h5>
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label class="form-label">@((lang == "FA") ? "شاخه (Branch)" : "Branch")</label>
+                            <input name="Branch" class="form-control" value="@Model?.Branch" placeholder="main">
+                            <small class="text-muted">@((lang == "FA") ? "شاخه‌ای که تگ روی آن ساخته شود" : "Branch to checkout (optional)")</small>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">@((lang == "FA") ? "نام تگ (Tag Name)" : "Tag Name")</label>
+                            <input name="TagName" class="form-control" value="@Model?.TagName" placeholder="v1.2.3" required>
+                            <small class="text-muted">@((lang == "FA") ? "مثال: v1.2.3 یا v1.2.3-rc.1" : "e.g. v1.2.3 or v1.2.3-rc.1")</small>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card: Tag Options -->
+                <div class="card p-3 shadow-sm mb-4">
+                    <h5 class="card-title">@((lang == "FA") ? "تنظیمات تگ" : "Tag Options")</h5>
+                    <div class="row g-3">
+                        <div class="col-md-4">
+                            <label class="form-label">@((lang == "FA") ? "نوع تگ" : "Tag Type")</label>
+                            <div class="d-flex gap-3">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="IsAnnotated" id="annotated_yes" value="true" @(Model?.IsAnnotated == true ? "checked" : "")>
+                                    <label class="form-check-label" for="annotated_yes">@((lang == "FA") ? "Annotated" : "Annotated")</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="IsAnnotated" id="annotated_no" value="false" @(Model?.IsAnnotated == false ? "checked" : "")>
+                                    <label class="form-check-label" for="annotated_no">@((lang == "FA") ? "Lightweight" : "Lightweight")</label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-4">
+                            <label class="form-label">@((lang == "FA") ? "امضای GPG" : "GPG Sign")</label>
+                            <div class="d-flex gap-3">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="UseGpgSign" id="signed_yes" value="true" @(Model?.UseGpgSign == true ? "checked" : "")>
+                                    <label class="form-check-label" for="signed_yes">@((lang == "FA") ? "فعال" : "Yes")</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="UseGpgSign" id="signed_no" value="false" @(Model?.UseGpgSign == false ? "checked" : "")>
+                                    <label class="form-check-label" for="signed_no">@((lang == "FA") ? "غیرفعال" : "No")</label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-4">
+                            <label class="form-label">@((lang == "FA") ? "Force replace" : "Force replace")</label>
+                            <div class="d-flex gap-3">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="ForceReplace" id="force_yes" value="true" @(Model?.ForceReplace == true ? "checked" : "")>
+                                    <label class="form-check-label" for="force_yes">@((lang == "FA") ? "فعال" : "Yes")</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="ForceReplace" id="force_no" value="false" @(Model?.ForceReplace == false ? "checked" : "")>
+                                    <label class="form-check-label" for="force_no">@((lang == "FA") ? "غیرفعال" : "No")</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card: Message & Target -->
+                <div class="card p-3 shadow-sm mb-4">
+                    <h5 class="card-title">@((lang == "FA") ? "پیام و مقصد" : "Message & Target")</h5>
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label class="form-label">@((lang == "FA") ? "پیام تگ" : "Tag Message")</label>
+                            <textarea name="Message" class="form-control" rows="3">@Model?.Message</textarea>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">@((lang == "FA") ? "Target (کامیت یا ref)" : "Target (commit-ish)")</label>
+                            <input name="Target" class="form-control" value="@Model?.Target" placeholder="HEAD or SHA">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">@((lang == "FA") ? "فایل پیام (-F)" : "Message File (-F)")</label>
+                            <input name="MessageFile" class="form-control" value="@Model?.MessageFile" placeholder="release-notes.md">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">@((lang == "FA") ? "Prerelease Label" : "Prerelease Label")</label>
+                            <input name="PreReleaseLabel" class="form-control" value="@Model?.PreReleaseLabel" placeholder="rc / beta / alpha">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card: Version bump & Push -->
+                <div class="card p-3 shadow-sm mb-4">
+                    <h5 class="card-title">@((lang == "FA") ? "نسخه و انتشار" : "Version & Push")</h5>
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label class="form-label">@((lang == "FA") ? "Version bump" : "Version bump")</label>
+                            <div class="d-flex gap-2 flex-wrap">
+                                @foreach (var option in new[] { "", "patch", "minor", "major" })
+                                {
+                                    var isChecked = Model?.VersionBump == option ? "checked" : "";
+                                    <div class="form-check form-check-inline">
+                                        <input class="form-check-input" type="radio" name="VersionBump" id="bump_@option" value="@option" @isChecked>
+                                        <label class="form-check-label" for="bump_@option">@((lang == "FA" && option == "") ? "هیچ" : (option == "") ? "none" : option)</label>
+                                    </div>
+                                }
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">@((lang == "FA") ? "Push پس از ایجاد" : "Push after create")</label>
+                            <div class="d-flex gap-3">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="PushAfter" id="push_yes" value="true" @(Model?.PushAfter == true ? "checked" : "")>
+                                    <label class="form-check-label" for="push_yes">@((lang == "FA") ? "بله" : "Yes")</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="PushAfter" id="push_no" value="false" @(Model?.PushAfter == false ? "checked" : "")>
+                                    <label class="form-check-label" for="push_no">@((lang == "FA") ? "خیر" : "No")</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="text-end mb-4">
+                    <button type="submit" class="btn btn-primary btn-lg">@((lang == "FA") ? "تولید دستور" : "Generate Command")</button>
+                </div>
+            </form>
+
+            <!-- Command Preview -->
+            <div class="card p-3 bg-dark text-light">
+                <h5>@((lang == "FA") ? "پیش‌نمایش دستور" : "Command Preview")</h5>
+                <pre class="text-success fw-bold" id="preview">@Model?.GeneratedCommand</pre>
+            </div>
+        </div>
+
+        <!-- Guide Tab -->
+        <div class="tab-pane fade" id="guide" role="tabpanel">
+            <div class="mt-3 p-3 bg-light rounded" style="max-height:600px;overflow:auto;">
+                @Html.Raw(lang == "FA" ? descFA : descEN)
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@section Scripts {
+    <script>
+        document.addEventListener('DOMContentLoaded', function(){
+            const preview = document.getElementById('preview');
+
+            function getValueSafe(selector){
+                const el = document.querySelector(selector);
+                return el ? el.value : '';
+            }
+
+            function getCheckedValueSafe(selector){
+                const el = document.querySelector(selector);
+                return el ? el.value : '';
+            }
+
+            function updatePreview(){
+                const tag = getValueSafe('input[name="TagName"]') || 'vX.Y.Z';
+                const branch = getValueSafe('input[name="Branch"]') || 'main';
+                const message = getValueSafe('textarea[name="Message"]');
+                const messageFile = getValueSafe('input[name="MessageFile"]');
+                const target = getValueSafe('input[name="Target"]');
+                const pre = getValueSafe('input[name="PreReleaseLabel"]');
+
+                const isAnnotated = getCheckedValueSafe('input[name="IsAnnotated"]:checked') === "true";
+                const useGpg = getCheckedValueSafe('input[name="UseGpgSign"]:checked') === "true";
+                const force = getCheckedValueSafe('input[name="ForceReplace"]:checked') === "true";
+                const version = getCheckedValueSafe('input[name="VersionBump"]:checked') || '';
+                const push = getCheckedValueSafe('input[name="PushAfter"]:checked') === "true";
+
+                let lines = [];
+                if(branch) lines.push(`git checkout ${branch}`);
+
+                let tagArgs = [];
+                if(isAnnotated) tagArgs.push(useGpg ? "-s" : "-a");
+                if(force) tagArgs.push("-f");
+                if(messageFile) tagArgs.push(`-F ${messageFile}`);
+                else if(message) tagArgs.push(`-m "${message}"`);
+                else if(isAnnotated) tagArgs.push(`-m "Release created"`);
+
+                if(pre) tagArgs.push(`--prerelease ${pre}`);
+
+                let targetPart = target ? ` ${target}` : "";
+                let tagCmd = `git tag ${tagArgs.join(' ')} ${tag}${targetPart}`.replace(/\s+/g,' ');
+                lines.push(tagCmd);
+
+                if(push){
+                    let pushCmd = force ? `git push origin --force refs/tags/${tag}` : `git push origin ${tag}`;
+                    lines.push(pushCmd);
+                }
+
+                preview.textContent = lines.join("\n");
+            }
+
+            document.querySelectorAll('input,textarea').forEach(el => el.addEventListener('input', updatePreview));
+            document.querySelectorAll('input[type="radio"]').forEach(el => el.addEventListener('change', updatePreview));
+            updatePreview();
+        });
+    </script>
+}

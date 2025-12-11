@@ -1,0 +1,120 @@
+﻿
+
+<style>
+    body {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        background: #f4f6f9;
+        padding: 20px;
+    }
+
+    .card-deep {
+        background: white;
+        padding: 20px;
+        border-radius: 12px;
+        margin-top: 20px;
+    }
+
+    .nav-tabs .nav-link {
+        cursor: pointer;
+    }
+
+    h3 {
+        margin-top: 20px;
+    }
+
+    ul {
+        margin-bottom: 20px;
+    }
+
+    strong {
+        color: #007bff;
+    }
+</style>
+
+<div class="container">
+    <div class="card-deep">
+        <h2>Git Best Practices – Professional & Team Projects</h2>
+
+        <div class="mb-3">
+            <button class="btn btn-secondary btn-sm" id="langEn">English</button>
+            <button class="btn btn-secondary btn-sm" id="langFa">فارسی</button>
+        </div>
+
+        <ul class="nav nav-tabs" id="tabs">
+            <li class="nav-item"><a class="nav-link active" data-tab="tab-best">Best Practices</a></li>
+        </ul>
+
+        <div class="tab-content mt-3">
+            <div class="tab-pane fade show active" id="tab-best">
+                <div id="content-best"></div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<script>
+    const content = {
+    en: `
+    <h3>Git Best Practices for Professional & Team Projects – Comprehensive Guide</h3>
+    <ul>
+    <li><strong>Branching Strategy:</strong> Use GitFlow, GitHub Flow, or Trunk-Based Development. Protect main/master with branch rules. Short-lived, focused feature branches. Clear naming conventions.</li>
+
+    <li><strong>Commit Hygiene:</strong> Write structured messages (type(scope): description). Atomic commits. Sign commits. Squash trivial commits. Use interactive rebase locally.</li>
+
+    <li><strong>Pull Requests & Code Review:</strong> Draft PRs early. Mandatory review with checklist. CI/CD passing required. Inline comments for discussion.</li>
+
+    <li><strong>Merge & Rebase:</strong> Fast-forward merge for linear history. Squash merge for small features. Avoid force-push on shared branches. Document merge reasons.</li>
+
+    <li><strong>Tagging & Release:</strong> Annotated tags. Semantic Versioning (MAJOR.MINOR.PATCH). Pre-release tags for QA/staging. Auto changelog generation. Traceable releases.</li>
+
+    <li><strong>CI/CD Integration:</strong> Automated build, test, lint, security scans. Branch-specific pipelines. Auto deploy. Git hooks/Actions enforce standards. Track test coverage.</li>
+
+    <li><strong>Conflict & Recovery:</strong> Use git rerere. Avoid rewriting public history. Sync feature branches regularly. Document conflict resolution strategy.</li>
+
+    <li><strong>Submodules & Worktrees:</strong> Use submodules for dependencies. Track versions carefully. Worktrees for multiple branches. Document multi-repo workflows.</li>
+
+    <li><strong>Security & Compliance:</strong> Signed commits & tags. CODEOWNERS for critical files. Restrict force-push. Secret scanning. Audit trail maintained.</li>
+
+    <li><strong>Team Coordination:</strong> Standard branch/PR naming. Merge main/develop regularly. Clear release cadence. Internal documentation. Mentoring & knowledge sharing.</li>
+
+    <li><strong>Documentation & Education:</strong> CONTRIBUTING.md and onboarding guides. Teach advanced Git (rebase, bisect, stash, cherry-pick, hooks). Continuous learning.</li>
+    </ul>
+    `,
+
+    fa: `
+    <h3>بهترین شیوه‌های Git برای پروژه‌های حرفه‌ای و تیم‌های بزرگ</h3>
+    <ul>
+    <li><strong>استراتژی شاخه‌ها:</strong> استفاده از GitFlow، GitHub Flow یا Trunk-Based Development. محافظت از main/master با قوانین شاخه. شاخه‌های feature کوتاه و متمرکز. نام‌گذاری واضح.</li>
+
+    <li><strong>بهداشت Commit:</strong> پیام‌های ساختاریافته (type(scope): description). commitهای atomic. امضا کردن commitها. squash commitهای جزئی. استفاده از interactive rebase محلی.</li>
+
+    <li><strong>Pull Request و بازبینی کد:</strong> PRها را زود و draft/WIP باز کنید. بازبینی اجباری با checklist. موفقیت CI/CD قبل از merge. کامنت‌های inline برای بحث.</li>
+
+    <li><strong>Merge و Rebase:</strong> fast-forward merge برای تاریخچه خطی. squash merge برای featureهای کوچک. اجتناب از force-push روی شاخه‌های مشترک. مستندسازی دلایل merge.</li>
+
+    <li><strong>Tag و Release:</strong> Annotated tags. Semantic Versioning (MAJOR.MINOR.PATCH). Pre-release tags برای QA/staging. تولید خودکار changelog. ردیابی releaseها.</li>
+
+    <li><strong>CI/CD:</strong> build، test، lint، security scan خودکار. pipelineهای شاخه‌ای. deploy خودکار. Git hooks/Actions برای اعمال استاندارد. ردیابی پوشش تست.</li>
+
+    <li><strong>مدیریت Conflict و بازیابی:</strong> استفاده از git rerere. اجتناب از بازنویسی تاریخچه عمومی. همگام‌سازی منظم featureها با main/develop. مستندسازی استراتژی حل conflict.</li>
+
+    <li><strong>Submodules و Worktrees:</strong> submodule برای مدیریت وابستگی‌ها. کنترل دقیق نسخه‌ها. worktree برای چند شاخه. مستندسازی workflowهای چند مخزنی.</li>
+
+    <li><strong>امنیت و Compliance:</strong> commit و tag امضا شده. CODEOWNERS برای فایل‌های حساس. محدود کردن force-push. بررسی secrets. نگهداری audit trail.</li>
+
+    <li><strong>هماهنگی تیمی:</strong> استانداردسازی نام‌گذاری شاخه‌ها و PRها. Merge منظم main/develop. cadence release مشخص. مستندسازی داخلی. mentoring و اشتراک دانش.</li>
+
+    <li><strong>مستندسازی و آموزش:</strong> CONTRIBUTING.md و راهنمای onboarding. آموزش Git پیشرفته (rebase، bisect، stash، cherry-pick، hooks). یادگیری مستمر.</li>
+    </ul>
+    `
+    };
+
+    function setContent(lang='en'){
+        document.getElementById('content-best').innerHTML = content[lang];
+    }
+
+    document.getElementById('langEn').addEventListener('click',()=>setContent('en'));
+    document.getElementById('langFa').addEventListener('click',()=>setContent('fa'));
+    setContent('en');
+</script>

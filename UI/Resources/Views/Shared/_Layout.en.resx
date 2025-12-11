@@ -1,0 +1,233 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+	<resheader name="resmimetype">
+		<value>text/microsoft-resx</value>
+	</resheader>
+	<resheader name="version">
+		<value>2.0</value>
+	</resheader>
+	<resheader name="reader">
+		<value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+	</resheader>
+	<resheader name="writer">
+		<value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+	</resheader>
+
+	<!-- MENU TITLES -->
+	<data name="Main Menu" xml:space="preserve">
+    <value>Main Menu</value>
+  </data>
+	<data name="BaseConcept" xml:space="preserve">
+    <value>BaseConcept</value>
+  </data>
+	<data name="GitIgnore" xml:space="preserve">
+    <value>GitIgnore</value>
+  </data>
+	<data name="GitFlow" xml:space="preserve">
+    <value>GitFlow</value>
+  </data>
+	<data name="VersionNew" xml:space="preserve">
+    <value>VersionNew</value>
+  </data>
+	<data name="VersionIndex" xml:space="preserve">
+    <value>VersionIndex</value>
+  </data>
+
+	<data name="Resources" xml:space="preserve">
+    <value>Resources Learn</value>
+  </data>
+
+	<data name="Tag" xml:space="preserve">
+    <value>Tag </value>
+  </data>
+	<data name="GitFlowNew" xml:space="preserve">
+    <value>GitFlow New </value>
+  </data>
+	<data name="Commit" xml:space="preserve">
+    <value>Commit New </value>
+  </data>
+
+	<data name="GitSubmodule" xml:space="preserve">
+    <value>GitSubmodule </value>
+  </data>
+
+
+	<data name="GitClone" xml:space="preserve">
+    <value>GitClone</value>
+  </data>
+
+
+	<data name="GitAdd" xml:space="preserve">
+    <value>GitAdd</value>
+  </data>
+
+
+
+	<data name="GitBranch" xml:space="preserve">
+    <value>git Branch</value>
+  </data>
+
+	<data name="GitCommit" xml:space="preserve">
+    <value>git Commit</value>
+  </data>
+
+	<data name="GitMerge" xml:space="preserve">
+    <value>git Merge</value>
+  </data>
+
+	<data name="GitCheckout" xml:space="preserve">
+    <value>git Checkout</value>
+  </data>
+
+	<data name="GitFetch" xml:space="preserve">
+    <value>git Fetch</value>
+  </data>
+
+	<data name="Gitpull" xml:space="preserve">
+    <value>git pull</value>
+  </data>
+
+	<data name="GitRebase" xml:space="preserve">
+    <value>git Rebase</value>
+  </data>
+
+
+	<data name="GitStash" xml:space="preserve">
+    <value>git Stash</value>
+  </data>
+
+	<data name="GitReset" xml:space="preserve">
+    <value>git Reset</value>
+  </data>
+
+	<data name="GitLog" xml:space="preserve">
+    <value>git Log</value>
+  </data>
+
+
+	<data name="GitDiff" xml:space="preserve">
+    <value>git Diff</value>
+  </data>
+
+
+	<data name="GitRemote" xml:space="preserve">
+    <value>git Remote</value>
+  </data>
+
+	<data name="Gitinit" xml:space="preserve">
+    <value>git init</value>
+  </data>
+	<data name="Gitrm" xml:space="preserve">
+    <value>git rm</value>
+  </data>
+	<data name="Gitmv" xml:space="preserve">
+    <value>git mv</value>
+  </data>
+
+
+
+	<data name="GitClean" xml:space="preserve">
+    <value>git Clean</value>
+  </data>
+	<data name="GitStatus" xml:space="preserve">
+    <value>git Status</value>
+  </data>
+	<data name="GitConfig" xml:space="preserve">
+    <value>git Config</value>
+  </data>
+
+
+
+	<data name="GitShow" xml:space="preserve">
+    <value>git Show</value>
+  </data>
+	
+	<data name="GitHelp" xml:space="preserve">
+    <value>git Help</value>
+  </data>
+	
+	<data name="GitAm" xml:space="preserve">
+    <value>git Am</value>
+  </data>
+
+
+
+	<data name="Gitarchive" xml:space="preserve">
+    <value>git archive</value>
+  </data>
+
+	<data name="GitBisect" xml:space="preserve">
+    <value>git Bisect</value>
+  </data>
+
+	<data name="Gitreflog" xml:space="preserve">
+    <value>git reflog</value>
+  </data>
+	
+	<data name="Gitshortlog" xml:space="preserve">
+    <value>git shortlog</value>
+  </data>
+
+	<data name="Gitupdate-index" xml:space="preserve">
+    <value>git update-index</value>
+  </data>
+
+
+	<data name="Gitcherry-pick" xml:space="preserve">
+    <value>git cherry-pick</value>
+  </data>
+
+	<data name="Gitreblame" xml:space="preserve">
+    <value>git blame</value>
+  </data>
+
+	<data name="Git Management" xml:space="preserve">
+    <value> Git Management</value>
+  </data>
+
+	<data name="Git Operations" xml:space="preserve">
+    <value>Git Operations</value>
+  </data>
+
+
+	<data name="Auxiliary Commands" xml:space="preserve">
+    <value> Auxiliary Commands</value>
+  </data>
+
+	<data name="Utilities" xml:space="preserve">
+    <value> Utilities </value>
+  </data>
+
+	<data name=" bestPractice" xml:space="preserve">
+    <value> bestPractice </value>
+  </data>
+	<data name="Standards" xml:space="preserve">
+    <value> استاندارها </value>
+  </data>
+
+	<data name="LargeFiles" xml:space="preserve">
+    <value> LargeFiles </value>
+  </data>
+
+	<data name="GitInternals" xml:space="preserve">
+    <value>  Basic Git Concept </value>
+  </data>
+
+	<data name="Hook_Scripts " xml:space="preserve">
+    <value>  Hook Scripts </value>
+  </data>
+	
+	<data name="GitHook" xml:space="preserve">
+    <value>  Hook </value>
+  </data>
+
+	<data name="GitScripts" xml:space="preserve">
+    <value> popular script</value>
+  </data>
+
+	<data name="GitConflict" xml:space="preserve">
+    <value> Conflict</value>
+  </data>
+	
+	
+</root>

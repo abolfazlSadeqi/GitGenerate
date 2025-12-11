@@ -1,0 +1,116 @@
+﻿@using Core
+@model GitIgnoreViewModel
+
+@{
+    ViewData["Title"] = "Generate .gitignore";
+}
+
+<div class="container my-5">
+    <h2 class="fw-bold text-primary mb-4">Generate .gitignore File</h2>
+
+    <div class="row g-4">
+
+        <!-- Sidebar: انتخاب زبان‌ها و Templateها -->
+        <div class="col-md-4">
+            <div class="card shadow-sm p-3 rounded-4 border-0">
+                <h5 class="fw-bold mb-3">Languages</h5>
+                @foreach (var lang in Model.Languages)
+                {
+                    <div class="form-check mb-2">
+                        <input class="form-check-input langCheck" type="checkbox" value="@lang.Name">
+                        <label class="form-check-label">@lang.Display</label>
+                    </div>
+                }
+
+                <h5 class="fw-bold mt-4 mb-3">Templates</h5>
+                @foreach (var temp in Model.Templates)
+                {
+                    <div class="form-check mb-2">
+                        <input class="form-check-input tempCheck" type="checkbox" value="@temp.Name">
+                        <label class="form-check-label">@temp.Display</label>
+                    </div>
+                }
+
+                <h5 class="fw-bold mt-4 mb-2">Custom Rules</h5>
+                <textarea id="customRules" class="form-control" placeholder="*.log" style="height:100px"></textarea>
+
+                <button id="generateBtn" class="btn btn-primary mt-3 w-100">Generate</button>
+                <button id="downloadBtn" class="btn btn-success mt-2 w-100">Download .gitignore</button>
+            </div>
+        </div>
+
+        <!-- Main: نمایش خروجی -->
+        <div class="col-md-8">
+            <div class="card shadow-lg p-4 rounded-4 border-0">
+                <h5 class="fw-bold">Generated .gitignore</h5>
+                <textarea id="output" class="form-control mt-3" style="height:600px;font-family:monospace;"></textarea>
+            </div>
+        </div>
+
+    </div>
+</div>
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script>
+         function getRequest() {
+            const langs = [...document.querySelectorAll(".langCheck:checked")].map(x => x.value);
+            const temps = [...document.querySelectorAll(".tempCheck:checked")].map(x => x.value);
+            const custom = document.getElementById("customRules").value
+                           .split("\n")
+                           .filter(x => x.trim() !== "")
+                           .map(x => ({ Pattern: x.trim(), Enabled: true, Description: "Custom" }));
+
+            return { SelectedLanguages: langs, SelectedTemplates: temps, CustomRules: custom };
+        }
+
+        document.getElementById("generateBtn").addEventListener("click", () => {
+            const request = getRequest();
+            fetch("/GitIgnore/Generate", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(request)
+            })
+            .then(res => res.json())
+            .then(data => {
+                document.getElementById("output").value = data.content;
+            });
+        });
+
+        document.getElementById("downloadBtn").addEventListener("click", () => {
+            const request = getRequest();
+            fetch("/GitIgnore/Download", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(request)
+            })
+            .then(res => res.blob())
+            .then(blob => {
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement("a");
+                a.href = url;
+                a.download = ".gitignore";
+                document.body.appendChild(a);
+                a.click();
+                a.remove();
+            });
+        });
+
+    </script>
+}
+<style>
+    .card {
+        transition: 0.25s;
+    }
+
+        .card:hover {
+            transform: translateY(-3px);
+        }
+
+    textarea {
+        transition: 0.2s;
+    }
+
+        textarea:hover {
+            box-shadow: 0 0 10px rgba(0,0,0,0.12);
+        }
+</style>

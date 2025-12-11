@@ -1,0 +1,137 @@
+﻿/* GENERAL */
+html {
+    font-size: 16px;
+    scroll-behavior: smooth;
+}
+
+body {
+    background: #f4f5f7;
+    margin: 0;
+    font-family: 'Roboto', sans-serif; /* تغییر فونت برای زیبایی بیشتر */
+    color: #333;
+}
+
+/* SIDEBAR DESKTOP */
+.sidebar {
+    width: 250px;
+    position: fixed;
+    top: 60px;
+    bottom: 0;
+    left: 0;
+    background: #2a2a2a;
+    box-shadow: 2px 0px 15px rgba(0, 0, 0, 0.1); /* سایه ملایم برای منو */
+    overflow-y: auto;
+    transition: all 0.3s ease;
+    z-index: 1050;
+}
+
+html[dir="rtl"] .sidebar {
+    right: 0;
+    left: auto;
+}
+
+.sidebar a {
+    display: block;
+    padding: 12px 20px;
+    color: #cfcfe8;
+    font-size: 14px;
+    text-decoration: none;
+    border-bottom: 1px solid #333; /* جداکننده برای هر لینک */
+    transition: background-color 0.3s ease;
+}
+
+    .sidebar a:hover {
+        background: #007bff;
+        color: white;
+        border-radius: 4px;
+    }
+
+    .sidebar a:active {
+        background: #0056b3;
+    }
+
+/* CONTENT */
+.content {
+    margin-top: 70px;
+    margin-left: 250px;
+    padding: 25px;
+    background-color: #ffffff;
+    box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.1); /* سایه ملایم برای محتوای اصلی */
+    border-radius: 8px; /* گوشه‌های گرد برای زیبایی بیشتر */
+}
+
+html[dir="rtl"] .content {
+    margin-right: 250px;
+    margin-left: 0;
+}
+
+/* FOOTER */
+footer {
+    background: #007bff;
+    padding: 20px;
+    color: white;
+    text-align: center;
+    margin-top: 40px;
+    border-radius: 8px; /* گوشه‌های گرد برای فوتر */
+}
+
+    footer a {
+        color: white;
+        text-decoration: none;
+        margin: 0 10px;
+    }
+
+        footer a:hover {
+            text-decoration: underline;
+        }
+
+/* 📱 MOBILE RESPONSIVE */
+@media (max-width: 991px) {
+    /* hide sidebar by default */
+    .sidebar {
+        display: none;
+        width: 250px;
+        position: fixed;
+        z-index: 9999;
+        height: 100vh;
+        padding-top: 70px;
+        background: #2a2a2a;
+        box-shadow: 2px 0px 15px rgba(0, 0, 0, 0.1);
+    }
+
+        /* offcanvas visible */
+        .sidebar.open {
+            display: block;
+        }
+
+    /* content full width */
+    .content {
+        margin-left: 0 !important;
+        margin-right: 0 !important;
+        padding: 20px;
+    }
+}
+
+/* Sidebar animation on opening and closing */
+.sidebar.open {
+    transform: translateX(0);
+}
+
+/* Mobile Navbar Toggle button */
+#menuToggle {
+    background-color: #007bff;
+    border-radius: 50%;
+    padding: 10px;
+    border: none;
+}
+
+/* Improved Hover Effects */
+.sidebar a:hover, footer a:hover {
+    transition: all 0.3s ease;
+    transform: translateX(5px); /* اضافه کردن افکت حرکت به جلو */
+}
+
+/* Smooth scrolling on anchor links */
+a {
+    transition: all 0.3s ease;
+}

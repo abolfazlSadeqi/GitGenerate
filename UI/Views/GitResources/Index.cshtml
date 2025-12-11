@@ -1,0 +1,64 @@
+﻿@using Core
+@model IEnumerable<GitResource>
+@{
+    string lang = ViewBag.Lang ?? "en";
+    var q = (string)ViewData["q"] ?? "";
+    var category = (string)ViewData["category"] ?? "";
+    var categories = (IEnumerable<string>)ViewData["categories"] ?? new List<string>();
+
+}
+
+
+
+<div class="container py-4">
+   
+    <form method="get" class="row g-2 mb-3">
+        <input type="hidden" name="lang" value="@lang" />
+        <div class="col-md-6">
+            <input name="q" value="@q" class="form-control" placeholder="@(lang == "FA" ? "جستجو در منابع..." : "Search resources...")" />
+        </div>
+        <div class="col-md-3">
+            <select name="category" class="form-select">
+                <option value="">
+                    @(lang == "FA" ? "همه دسته‌ها" : "All categories")
+                </option>
+
+                @foreach (var c in categories)
+                {
+                    <option value="@c" selected="@(c == category)">
+                        @c
+                    </option>
+                }
+            </select>
+
+        </div>
+        <div class="col-md-3">
+            <button class="btn btn-primary">@(lang == "FA" ? "جستجو" : "Search")</button>
+        </div>
+    </form>
+
+
+    <div class="table-responsive">
+        <table class="table table-hover table-bordered">
+            <thead class="table-light">
+                <tr>
+                    <th>@(lang == "FA" ? "نام سایت" : "Site")</th>
+                    <th>@(lang == "FA" ? "دسته" : "Category")</th>
+                    <th>@(lang == "FA" ? "توضیحات" : "Description")</th>
+                    <th>@(lang == "FA" ? "آدرس" : "Link")</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var r in Model)
+                {
+                    <tr>
+                        <td>@r.SiteName</td>
+                        <td>@r.Category</td>
+                        <td>@r.Description</td>
+                        <td><a href="@r.Url" target="_blank">@(lang == "FA" ? "مشاهده" : "Visit")</a></td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

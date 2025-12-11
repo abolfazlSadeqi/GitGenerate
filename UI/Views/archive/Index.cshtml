@@ -1,0 +1,80 @@
+﻿@using System.Globalization
+@using Core
+@model ArchiveCommandModel
+@{
+    var lang = CultureInfo.CurrentCulture.TwoLetterISOLanguageName.ToUpper();
+    var FA = lang == "FA";
+}
+
+<div class="container py-5">
+    <h1 class="text-center mb-4 text-primary">@((FA) ? Model.TitleFa : Model.TitleEn)</h1>
+
+    <ul class="nav nav-tabs">
+        <li class="nav-item"><button class="nav-link active" data-bs-toggle="tab" data-bs-target="#builder">@((FA) ? "ساخت دستور" : "Command Builder")</button></li>
+        <li class="nav-item"><button class="nav-link" data-bs-toggle="tab" data-bs-target="#guide">@((FA) ? "راهنما" : "Guide")</button></li>
+    </ul>
+
+    <div class="tab-content mt-4">
+        <div class="tab-pane fade show active" id="builder">
+            <form id="mvForm" class="row g-3">
+                @foreach (var field in Model.Fields)
+                {
+                    <div class="col-md-6">
+                        <label class="form-label">@((FA) ? field.LabelFa : field.LabelEn)</label>
+                        @if (field.Type == "text")
+                        {
+                            <input type="text" name="@field.Name" class="form-control" placeholder="@((FA) ? field.PlaceholderFa : field.PlaceholderEn)" />
+                        }
+                        else if (field.Type == "checkbox")
+                        {
+                            <div class="form-check">
+                                <input type="checkbox" class="form-check-input" name="@field.Name" id="@field.Name" />
+                            </div>
+                        }
+                    </div>
+                }
+                <div class="col-12 text-end">
+                    <button type="button" class="btn btn-primary" id="generateBtn">@((FA) ? "تولید دستور" : "Generate Command")</button>
+                </div>
+            </form>
+
+            <div class="mt-4">
+                <h5>@(FA ? "پیش‌نمایش دستور" : "Command Preview")</h5>
+                <pre class="bg-dark text-success p-3 rounded" id="cmdPreview"></pre>
+            </div>
+        </div>
+
+        <div class="tab-pane fade" id="guide">
+            <div class="p-3 bg-light rounded" style="max-height:600px;overflow:auto;">
+                @Html.Raw(FA ? Model.GuideHtmlFa : Model.GuideHtmlEn)
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        document.addEventListener('DOMContentLoaded', function(){
+            const btn = document.getElementById('generateBtn');
+            const preview = document.getElementById('cmdPreview');
+            const form = document.getElementById('mvForm');
+
+            btn.addEventListener('click', function(){
+                let cmd = "git archive";
+                const data = new FormData(form);
+
+                // بررسی گزینه‌های checkbox
+                if (data.get("Force") === "on") cmd += " -f"; // Force
+                if (data.get("DryRun") === "on") cmd += " -n"; // Dry run
+
+                // اضافه کردن مقادیر دیگر به دستور
+                if (data.get("Commit")) cmd += ` ${data.get("Commit")}`;
+                if (data.get("Format")) cmd += ` --format=${data.get("Format")}`;
+                if (data.get("Prefix")) cmd += ` --prefix=${data.get("Prefix")}`;
+                if (data.get("Output")) cmd += ` --output=${data.get("Output")}`;
+
+                preview.textContent = cmd;
+            });
+        });
+    </script>
+}

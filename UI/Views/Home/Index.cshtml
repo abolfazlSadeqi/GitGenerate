@@ -1,0 +1,32 @@
+﻿@using Microsoft.AspNetCore.Localization
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+
+@{
+    ViewData["Title"] = Core.Resources.Resource.WelcomeMessage;
+    var lang = System.Globalization.CultureInfo.CurrentUICulture.Name;
+    var isRtl = lang.StartsWith("fa");
+}
+
+
+<!-- Hero Section -->
+<div class="hero">
+    <h1>@Core.Resources.Resource.WelcomeMessage</h1>
+ 
+</div>
+
+<!-- Info Cards -->
+<div class="cards-container">
+    <div class="info-card">
+        <div class="info-icon"><i class="bi bi-speedometer2"></i></div>
+        <div class="info-text">
+          @Html.Raw( 
+            @Core.Resources.Resource.IntroText
+          )
+        </div>
+    </div>
+  
+
+</div>
+
+

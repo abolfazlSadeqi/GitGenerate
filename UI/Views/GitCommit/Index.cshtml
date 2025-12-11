@@ -1,0 +1,751 @@
+﻿@using Core
+@using System.Globalization
+@model GitCommitPageModel
+
+@{
+    Layout = "_Layout";
+    var lang = CultureInfo.CurrentCulture.TwoLetterISOLanguageName.ToUpper();
+    var FA = lang == "FA";
+    var title = FA ? Model.TitleFa : Model.TitleEn;
+    var guideHtml = FA ? Model.GuideHtmlFa : Model.GuideHtmlEn;
+}
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />
+
+<div class="container py-5">
+    <h1 class="text-center mb-4">@title</h1>
+
+    <!-- Main Tabs -->
+    <ul class="nav nav-tabs mb-3" id="mainTabs" role="tablist">
+        <li class="nav-item" role="presentation">
+            <button class="nav-link active" id="builder-tab" data-bs-toggle="tab" data-bs-target="#builder" type="button" role="tab">
+                @(FA ? "ساخت دستور" : "Command Builder")
+            </button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="guide-tab" data-bs-toggle="tab" data-bs-target="#guide" type="button" role="tab">
+                @(FA ? "راهنما" : "Guide")
+            </button>
+        </li>
+    </ul>
+
+    <div class="tab-content">
+        <!-- BUILDER TAB -->
+        <div class="tab-pane fade show active" id="builder" role="tabpanel">
+
+            <div class="row">
+                <div class="col-lg-8">
+                    <!-- Grouped sub-tabs navigation -->
+                    <div class="card mb-3">
+                        <div class="card-body">
+                            <ul class="nav nav-pills flex-wrap" id="subGroupTabs" role="tablist">
+                                <li class="nav-item"><a class="nav-link active" data-bs-toggle="pill" href="#basic">@(FA ? "پایه" : "Basic")</a></li>
+                                <li class="nav-item"><a class="nav-link" data-bs-toggle="pill" href="#history">@(FA ? "ویرایش تاریخچه" : "History Editing")</a></li>
+                                <li class="nav-item"><a class="nav-link" data-bs-toggle="pill" href="#undo">@(FA ? "بازگردانی" : "Undo/Recovery")</a></li>
+                                <li class="nav-item"><a class="nav-link" data-bs-toggle="pill" href="#meta">@(FA ? "متادیتا" : "Metadata")</a></li>
+                                <li class="nav-item"><a class="nav-link" data-bs-toggle="pill" href="#advanced">@(FA ? "پیشرفته" : "Advanced")</a></li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="tab-content">
+                        <!-- ========== BASIC group ========== -->
+                        <div class="tab-pane fade show active" id="basic">
+                            <div class="card mb-3">
+                                <div class="card-header d-flex justify-content-between align-items-center">
+                                    <strong>@(FA ? "کامیت پایه / Partial / Empty" : "Create Commit / Partial / Empty")</strong>
+                                    <small class="text-muted">@(FA ? "پایه‌ای" : "basic")</small>
+                                </div>
+                                <div class="card-body">
+                                    <ul class="nav nav-tabs mb-3" id="basicTabs" role="tablist">
+                                        <li class="nav-item"><button class="nav-link active" data-bs-toggle="tab" data-bs-target="#createCommit" type="button">@((FA) ? "ساخت (Create)" : "Create")</button></li>
+                                        <li class="nav-item"><button class="nav-link" data-bs-toggle="tab" data-bs-target="#partialCommit" type="button">@((FA) ? "پارتیال (-p)" : "Partial (-p)")</button></li>
+                                        <li class="nav-item"><button class="nav-link" data-bs-toggle="tab" data-bs-target="#emptyCommit" type="button">@((FA) ? "کامیت خالی" : "Empty Commit")</button></li>
+                                    </ul>
+
+                                    <div class="tab-content">
+                                        <!-- Create -->
+                                        <div class="tab-pane fade show active" id="createCommit">
+                                            <form class="row g-3" id="formCreate">
+                                                <div class="col-md-12">
+                                                    <label class="form-label">@((FA) ? "پیام کامیت" : "Commit message")</label>
+                                                    <textarea name="message" class="form-control" rows="3" placeholder="fix: corrected bug"></textarea>
+                                                    <div class="form-text">@((FA) ? "پیام کامیت (قالب پیشنهادی: Conventional Commits)" : "Commit message (Conventional Commits recommended)")</div>
+                                                </div>
+
+                                                <div class="col-md-4">
+                                                    <label class="form-label">@(FA ? "از فایل پیام (-F)" : "Message file (-F)")</label>
+                                                    <input name="messageFile" class="form-control" placeholder="release-notes.md" />
+                                                </div>
+
+                                                <div class="col-md-4">
+                                                    <label class="form-label">@(FA ? "استیج خودکار (-a)" : "Auto-stage (-a)")</label>
+                                                    <div class="form-check">
+                                                        <input class="form-check-input" type="checkbox" name="autoStage" id="autoStage" />
+                                                        <label class="form-check-label" for="autoStage">@(FA ? "فعال" : "Yes")</label>
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-md-4">
+                                                    <label class="form-label">@(FA ? "skip hooks" : "Skip hooks")</label>
+                                                    <div class="form-check">
+                                                        <input class="form-check-input" type="checkbox" name="noVerify" />
+                                                        <label class="form-check-label">@(FA ? "نادیده گرفتن Hook" : "No-verify")</label>
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-md-4">
+                                                    <label class="form-label">@(FA ? "حالت پاکسازی پیام (--cleanup)" : "Message cleanup (--cleanup)")</label>
+                                                    <select name="cleanup" class="form-select">
+                                                        <option value="">default</option>
+                                                        <option value="strip">strip</option>
+                                                        <option value="whitespace">whitespace</option>
+                                                        <option value="scissors">scissors</option>
+                                                    </select>
+                                                </div>
+
+                                                <div class="col-md-4">
+                                                    <label class="form-label">@(FA ? "اضافه کردن همه تغییرات" : "Add all changes")</label>
+                                                    <div class="form-check">
+                                                        <input class="form-check-input" type="checkbox" name="addAll" />
+                                                        <label class="form-check-label">@((FA) ? "-A" : "-A")</label>
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-12 text-end">
+                                                    <button type="button" class="btn btn-primary btn-sm" id="genCreate">@((FA) ? "تولید" : "Generate")</button>
+                                                    <button type="button" class="btn btn-outline-secondary btn-sm ms-2" id="copyCreate">@((FA) ? "کپی" : "Copy")</button>
+                                                </div>
+
+                                                <div class="col-12 mt-3">
+                                                    <h6>@((FA) ? "پیش‌نمایش" : "Preview")</h6>
+                                                    <pre class="p-3 bg-dark text-light" id="previewCreate"></pre>
+                                                    <div class="small text-muted mt-1">@((FA) ? "محدودیت‌ها: پیام باید ارائه شود، اگر -a استفاده نشود تغییرات باید با git add آماده شود." : "Limitations: changes must be staged unless -a is used; message required unless -F or --allow-empty.")</div>
+                                                </div>
+                                            </form>
+                                        </div>
+
+                                        <!-- Partial -->
+                                        <div class="tab-pane fade" id="partialCommit">
+                                            <form id="formPartial" class="row g-3">
+                                                <div class="col-12">
+                                                    <label class="form-label">@(FA ? "تعامل انتخاب هانک (-p)" : "Interactive hunk selection (-p)")</label>
+                                                    <div class="form-text">@(FA ? "کاربر می‌تواند هانک‌ها را انتخاب کند؛ این یک شبیه‌سازی است و در ترمینال واقعی رفتار تعاملی دارد." : "Interactive hunk selection — in real terminal it's interactive; here we build the command only.")</div>
+                                                </div>
+
+                                                <div class="col-md-6">
+                                                    <label class="form-label">@(FA ? "فایل‌ها (مثال: file1.txt file2.txt)" : "Files (e.g. file1.txt file2.txt)")</label>
+                                                    <input name="files" class="form-control" placeholder="file1.txt file2.txt" />
+                                                </div>
+
+                                                <div class="col-12 text-end">
+                                                    <button type="button" class="btn btn-primary btn-sm" id="genPartial">@((FA) ? "تولید" : "Generate")</button>
+                                                    <button type="button" class="btn btn-outline-secondary btn-sm ms-2" id="copyPartial">@((FA) ? "کپی" : "Copy")</button>
+                                                </div>
+
+                                                <div class="col-12 mt-3">
+                                                    <pre class="p-3 bg-dark text-light" id="previewPartial"></pre>
+                                                    <div class="small text-muted">@((FA) ? "محدودیت‌ها: -p تعاملی است و در این UI فقط دستور ساخته می‌شود." : "Limitations: -p is interactive; this UI only constructs the command.")</div>
+                                                </div>
+                                            </form>
+                                        </div>
+
+                                        <!-- Empty -->
+                                        <div class="tab-pane fade" id="emptyCommit">
+                                            <form id="formEmpty" class="row g-3">
+                                                <div class="col-md-8">
+                                                    <label class="form-label">@(FA ? "پیام (اختیاری)" : "Message (optional)")</label>
+                                                    <input name="message" class="form-control" placeholder="chore: create empty commit" />
+                                                </div>
+                                                <div class="col-md-4 d-flex align-items-end">
+                                                    <div>
+                                                        <div class="form-check">
+                                                            <input class="form-check-input" type="checkbox" name="allowEmpty" id="allowEmpty" />
+                                                            <label class="form-check-label" for="allowEmpty">@(FA ? "اجازهٔ خالی" : "Allow empty")</label>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-12 text-end">
+                                                    <button type="button" class="btn btn-primary btn-sm" id="genEmpty">@((FA) ? "تولید" : "Generate")</button>
+                                                    <button type="button" class="btn btn-outline-secondary btn-sm ms-2" id="copyEmpty">@((FA) ? "کپی" : "Copy")</button>
+                                                </div>
+
+                                                <div class="col-12 mt-3">
+                                                    <pre class="p-3 bg-dark text-light" id="previewEmpty"></pre>
+                                                    <div class="small text-muted">@((FA) ? "محدودیت‌ها: --allow-empty وقتی ضروری است که تغییری وجود نداشته باشد." : "--allow-empty is used to commit without changes.")</div>
+                                                </div>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- ========== HISTORY EDITING group ========== -->
+                        <div class="tab-pane fade" id="history">
+                            <div class="card mb-3">
+                                <div class="card-header">
+                                    <strong>@(FA ? "ویرایش تاریخچه" : "Amend / Fixup / Squash")</strong>
+                                </div>
+                                <div class="card-body">
+                                    <ul class="nav nav-tabs mb-3" id="historyTabs" role="tablist">
+                                        <li class="nav-item"><button class="nav-link active" data-bs-toggle="tab" data-bs-target="#amendTab" type="button">@(FA ? "Amend" : "Amend")</button></li>
+                                        <li class="nav-item"><button class="nav-link" data-bs-toggle="tab" data-bs-target="#fixupTab" type="button">@(FA ? "Fixup" : "Fixup")</button></li>
+                                        <li class="nav-item"><button class="nav-link" data-bs-toggle="tab" data-bs-target="#squashTab" type="button">@(FA ? "Squash" : "Squash")</button></li>
+                                    </ul>
+
+                                    <div class="tab-content">
+                                        <!-- Amend -->
+                                        <div class="tab-pane fade show active" id="amendTab">
+                                            <form id="formAmend" class="row g-3">
+                                                <div class="col-12">
+                                                    <label class="form-label">@(FA ? "ویرایش آخرین کامیت (اضافه کردن استیج)" : "Amend last commit (add staged)")</label>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <label class="form-label">@(FA ? "ویرایش پیام" : "Edit message")</label>
+                                                    <input name="amendMessage" class="form-control" placeholder="fix: update details" />
+                                                </div>
+                                                <div class="col-md-6 d-flex align-items-end">
+                                                    <div class="form-check">
+                                                        <input class="form-check-input" type="checkbox" name="noEdit" id="noEdit" />
+                                                        <label class="form-check-label" for="noEdit">@((FA) ? "بدون باز کردن ویرایشگر (--no-edit)" : "No edit (--no-edit)")</label>
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-12 text-end">
+                                                    <button type="button" class="btn btn-primary btn-sm" id="genAmend">@((FA) ? "تولید" : "Generate")</button>
+                                                    <button type="button" class="btn btn-outline-secondary btn-sm ms-2" id="copyAmend">@((FA) ? "کپی" : "Copy")</button>
+                                                </div>
+
+                                                <div class="col-12 mt-3">
+                                                    <pre class="p-3 bg-dark text-light" id="previewAmend"></pre>
+                                                    <div class="small text-muted">@((FA) ? "محدودیت‌ها: amend تاریخچه را بازنویسی می‌کند؛ در مخازن منتشرشده با احتیاط استفاده کنید." : "Limitations: amend rewrites history; avoid on published repos.")</div>
+                                                </div>
+                                            </form>
+                                        </div>
+
+                                        <!-- Fixup -->
+                                        <div class="tab-pane fade" id="fixupTab">
+                                            <form id="formFixup" class="row g-3">
+                                                <div class="col-md-6">
+                                                    <label class="form-label">@(FA ? "commit هدف (hash)" : "Target commit (hash)")</label>
+                                                    <input name="fixupTarget" class="form-control" placeholder="abc1234" />
+                                                </div>
+                                                <div class="col-12 text-end">
+                                                    <button type="button" class="btn btn-primary btn-sm" id="genFixup">@((FA) ? "تولید" : "Generate")</button>
+                                                    <button type="button" class="btn btn-outline-secondary btn-sm ms-2" id="copyFixup">@((FA) ? "کپی" : "Copy")</button>
+                                                </div>
+
+                                                <div class="col-12 mt-3">
+                                                    <pre class="p-3 bg-dark text-light" id="previewFixup"></pre>
+                                                    <div class="small text-muted">@((FA) ? "نکته: سپس از rebase -i --autosquash استفاده کنید." : "Note: then use rebase -i --autosquash.")</div>
+                                                </div>
+                                            </form>
+                                        </div>
+
+                                        <!-- Squash -->
+                                        <div class="tab-pane fade" id="squashTab">
+                                            <form id="formSquash" class="row g-3">
+                                                <div class="col-md-6">
+                                                    <label class="form-label">@(FA ? "commit هدف (hash) برای squash" : "Target commit to squash into")</label>
+                                                    <input name="squashTarget" class="form-control" placeholder="abc1234" />
+                                                </div>
+                                                <div class="col-md-6 d-flex align-items-end">
+                                                    <div class="form-check">
+                                                        <input class="form-check-input" type="checkbox" name="autosquash" id="autosquash" />
+                                                        <label class="form-check-label" for="autosquash">@((FA) ? "autosquash (--autosquash)" : "autosquash (--autosquash)")</label>
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-12 text-end">
+                                                    <button type="button" class="btn btn-primary btn-sm" id="genSquash">@((FA) ? "تولید" : "Generate")</button>
+                                                    <button type="button" class="btn btn-outline-secondary btn-sm ms-2" id="copySquash">@((FA) ? "کپی" : "Copy")</button>
+                                                </div>
+
+                                                <div class="col-12 mt-3">
+                                                    <pre class="p-3 bg-dark text-light" id="previewSquash"></pre>
+                                                    <div class="small text-muted">@((FA) ? "نکته: squash معمولاً با rebase انجام می‌شود؛ تاریخچه بازنویسی می‌شود." : "Note: squash usually done via rebase; rewrites history.")</div>
+                                                </div>
+                                            </form>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- ========== UNDO / RECOVERY group ========== -->
+                        <div class="tab-pane fade" id="undo">
+                            <div class="card mb-3">
+                                <div class="card-header"><strong>@(FA ? "بازگردانی و ریست" : "Revert / Reset / Restore")</strong></div>
+                                <div class="card-body">
+                                    <ul class="nav nav-tabs mb-3">
+                                        <li class="nav-item"><button class="nav-link active" data-bs-toggle="tab" data-bs-target="#revertTab" type="button">@(FA ? "Revert" : "Revert")</button></li>
+                                        <li class="nav-item"><button class="nav-link" data-bs-toggle="tab" data-bs-target="#resetTab" type="button">@(FA ? "Reset" : "Reset")</button></li>
+                                        <li class="nav-item"><button class="nav-link" data-bs-toggle="tab" data-bs-target="#restoreTab" type="button">@(FA ? "Restore" : "Restore")</button></li>
+                                    </ul>
+
+                                    <div class="tab-content">
+                                        <!-- Revert -->
+                                        <div class="tab-pane fade show active" id="revertTab">
+                                            <form id="formRevert" class="row g-3">
+                                                <div class="col-md-8">
+                                                    <label class="form-label">@(FA ? "کامیت برای ریورت" : "Commit to revert")</label>
+                                                    <input name="revertCommit" class="form-control" placeholder="abc1234" />
+                                                </div>
+                                                <div class="col-md-4 d-flex align-items-end">
+                                                    <div class="form-check">
+                                                        <input class="form-check-input" type="checkbox" name="revertNoEdit" id="revertNoEdit" />
+                                                        <label class="form-check-label" for="revertNoEdit">@((FA) ? "بدون ویرایش (--no-edit)" : "No edit (--no-edit)")</label>
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-12 text-end">
+                                                    <button type="button" class="btn btn-primary btn-sm" id="genRevert">@((FA) ? "تولید" : "Generate")</button>
+                                                    <button type="button" class="btn btn-outline-secondary btn-sm ms-2" id="copyRevert">@((FA) ? "کپی" : "Copy")</button>
+                                                </div>
+
+                                                <div class="col-12 mt-3">
+                                                    <pre class="p-3 bg-dark text-light" id="previewRevert"></pre>
+                                                    <div class="small text-muted">@((FA) ? "نکته: revert ایمن برای تاریخچه مشترک است." : "Note: revert is safe for shared history.")</div>
+                                                </div>
+                                            </form>
+                                        </div>
+
+                                        <!-- Reset -->
+                                        <div class="tab-pane fade" id="resetTab">
+                                            <form id="formReset" class="row g-3">
+                                                <div class="col-md-4">
+                                                    <label class="form-label">@((FA) ? "حالت ریست" : "Reset mode")</label>
+                                                    <select name="resetMode" class="form-select">
+                                                        <option value="mixed">mixed (default)</option>
+                                                        <option value="soft">soft</option>
+                                                        <option value="hard">hard</option>
+                                                        <option value="merge">merge</option>
+                                                        <option value="keep">keep</option>
+                                                    </select>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <label class="form-label">@(FA ? "هدف (commit)" : "Target (commit)")</label>
+                                                    <input name="resetTarget" class="form-control" placeholder="abc1234 or HEAD~1" />
+                                                </div>
+                                                <div class="col-12 text-end">
+                                                    <button type="button" class="btn btn-primary btn-sm" id="genReset">@((FA) ? "تولید" : "Generate")</button>
+                                                    <button type="button" class="btn btn-outline-secondary btn-sm ms-2" id="copyReset">@((FA) ? "کپی" : "Copy")</button>
+                                                </div>
+
+                                                <div class="col-12 mt-3">
+                                                    <pre class="p-3 bg-dark text-light" id="previewReset"></pre>
+                                                    <div class="small text-muted">@((FA) ? "هشدار: reset تاریخچه محلی را تغییر می‌دهد و می‌تواند باعث از دست رفتن تغییرات شود." : "Warning: reset changes local history and can lose work.")</div>
+                                                </div>
+                                            </form>
+                                        </div>
+
+                                        <!-- Restore -->
+                                        <div class="tab-pane fade" id="restoreTab">
+                                            <form id="formRestore" class="row g-3">
+                                                <div class="col-md-6">
+                                                    <label class="form-label">@((FA) ? "فایل‌ها برای بازگردانی" : "Files to restore")</label>
+                                                    <input name="restoreFiles" class="form-control" placeholder="file1.txt file2.txt" />
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <label class="form-label">@((FA) ? "از commit" : "From commit")</label>
+                                                    <input name="restoreFrom" class="form-control" placeholder="HEAD~1 or commitHash" />
+                                                </div>
+
+                                                <div class="col-12 text-end">
+                                                    <button type="button" class="btn btn-primary btn-sm" id="genRestore">@((FA) ? "تولید" : "Generate")</button>
+                                                    <button type="button" class="btn btn-outline-secondary btn-sm ms-2" id="copyRestore">@((FA) ? "کپی" : "Copy")</button>
+                                                </div>
+
+                                                <div class="col-12 mt-3">
+                                                    <pre class="p-3 bg-dark text-light" id="previewRestore"></pre>
+                                                    <div class="small text-muted">@((FA) ? "restore بر روی staged/working tree تاثیر می‌گذارد." : "restore affects staged/working tree.")</div>
+                                                </div>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- ========== METADATA group ========== -->
+                        <div class="tab-pane fade" id="meta">
+                            <div class="card mb-3">
+                                <div class="card-header"><strong>@(FA ? "متادیتا: نویسنده، تاریخ، قالب" : "Metadata: Author, Date, Template")</strong></div>
+                                <div class="card-body">
+                                    <form id="formMeta" class="row g-3">
+                                        <div class="col-md-6">
+                                            <label class="form-label">@((FA) ? "بازنویسی نویسنده (--author)" : "Override author (--author)")</label>
+                                            <input name="metaAuthor" class="form-control" placeholder="Jane Doe <jane@example.com>" />
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label class="form-label">@((FA) ? "تاریخ کامیت (--date)" : "Commit date (--date)")</label>
+                                            <input name="metaDate" class="form-control" placeholder="2025-12-01T12:00:00" />
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label class="form-label">@((FA) ? "قالب پیام (--template)" : "Template (--template)")</label>
+                                            <input name="metaTemplate" class="form-control" placeholder=".gitmessage.txt" />
+                                        </div>
+                                        <div class="col-md-6 d-flex align-items-end">
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="checkbox" name="metaSign" id="metaSign" />
+                                                <label class="form-check-label" for="metaSign">@((FA) ? "امضا (–S)" : "Sign (-S)")</label>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-12 text-end">
+                                            <button type="button" class="btn btn-primary btn-sm" id="genMeta">@((FA) ? "تولید" : "Generate")</button>
+                                            <button type="button" class="btn btn-outline-secondary btn-sm ms-2" id="copyMeta">@((FA) ? "کپی" : "Copy")</button>
+                                        </div>
+
+                                        <div class="col-12 mt-3">
+                                            <pre class="p-3 bg-dark text-light" id="previewMeta"></pre>
+                                            <div class="small text-muted">@((FA) ? "نکته: امضا نیاز به تنظیم کلید محلی دارد." : "Note: signing requires configured local keys.")</div>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- ========== ADVANCED group ========== -->
+                        <div class="tab-pane fade" id="advanced">
+                            <div class="card mb-3">
+                                <div class="card-header"><strong>@(FA ? "موارد پیشرفته" : "Advanced")</strong></div>
+                                <div class="card-body">
+                                    <ul class="nav nav-tabs mb-3">
+                                        <li class="nav-item"><button class="nav-link active" data-bs-toggle="tab" data-bs-target="#signTab" type="button">@(FA ? "امضا" : "Sign")</button></li>
+                                        <li class="nav-item"><button class="nav-link" data-bs-toggle="tab" data-bs-target="#commitTreeTab" type="button">Commit-tree</button></li>
+                                        <li class="nav-item"><button class="nav-link" data-bs-toggle="tab" data-bs-target="#orphanTab" type="button">@(FA ? "Orphan/Root" : "Orphan/Root")</button></li>
+                                    </ul>
+
+                                    <div class="tab-content">
+                                        <!-- Sign -->
+                                        <div class="tab-pane fade show active" id="signTab">
+                                            <form id="formSign" class="row g-3">
+                                                <div class="col-md-6">
+                                                    <label class="form-label">@((FA) ? "نوع امضا" : "Sign type")</label>
+                                                    <select name="signType" class="form-select">
+                                                        <option value="gpg">GPG (-S)</option>
+                                                        <option value="ssh">SSH (gpg-ssh)</option>
+                                                    </select>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <label class="form-label">@((FA) ? "کلید/آیدی (اختیاری)" : "Key ID (optional)")</label>
+                                                    <input name="signKey" class="form-control" placeholder="0xABCD1234" />
+                                                </div>
+
+                                                <div class="col-12 text-end">
+                                                    <button type="button" class="btn btn-primary btn-sm" id="genSign">@((FA) ? "تولید" : "Generate")</button>
+                                                    <button type="button" class="btn btn-outline-secondary btn-sm ms-2" id="copySign">@((FA) ? "کپی" : "Copy")</button>
+                                                </div>
+
+                                                <div class="col-12 mt-3">
+                                                    <pre class="p-3 bg-dark text-light" id="previewSign"></pre>
+                                                    <div class="small text-muted">@((FA) ? "امضا باید در محیط محلی پیکربندی شده باشد." : "Signing must be configured locally.")</div>
+                                                </div>
+                                            </form>
+                                        </div>
+
+                                        <!-- commit-tree -->
+                                        <div class="tab-pane fade" id="commitTreeTab">
+                                            <form id="formCommitTree" class="row g-3">
+                                                <div class="col-md-6">
+                                                    <label class="form-label">@(FA ? "درخت (tree hash)" : "Tree hash")</label>
+                                                    <input name="treeHash" class="form-control" placeholder="4b825dc642cb..." />
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <label class="form-label">@(FA ? "پیام" : "Message")</label>
+                                                    <input name="treeMessage" class="form-control" placeholder="root commit" />
+                                                </div>
+
+                                                <div class="col-12 text-end">
+                                                    <button type="button" class="btn btn-primary btn-sm" id="genTree">@((FA) ? "تولید" : "Generate")</button>
+                                                    <button type="button" class="btn btn-outline-secondary btn-sm ms-2" id="copyTree">@((FA) ? "کپی" : "Copy")</button>
+                                                </div>
+
+                                                <div class="col-12 mt-3">
+                                                    <pre class="p-3 bg-dark text-light" id="previewTree"></pre>
+                                                    <div class="small text-muted">@((FA) ? "این یک دستور plumbing است؛ برای کارهای سطح پایین استفاده می‌شود." : "This is a plumbing command (low level).")</div>
+                                                </div>
+                                            </form>
+                                        </div>
+
+                                        <!-- Orphan -->
+                                        <div class="tab-pane fade" id="orphanTab">
+                                            <form id="formOrphan" class="row g-3">
+                                                <div class="col-6">
+                                                    <label class="form-label">@(FA ? "نام شاخهٔ اورفان" : "Orphan branch name")</label>
+                                                    <input name="orphanName" class="form-control" placeholder="new-root" />
+                                                </div>
+                                                <div class="col-6 d-flex align-items-end">
+                                                    <div class="form-check">
+                                                        <input class="form-check-input" type="checkbox" name="createInitial" id="createInitial" />
+                                                        <label class="form-check-label" for="createInitial">@((FA) ? "ایجاد کامیت اولیه" : "Create initial commit")</label>
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-12 text-end">
+                                                    <button type="button" class="btn btn-primary btn-sm" id="genOrphan">@((FA) ? "تولید" : "Generate")</button>
+                                                    <button type="button" class="btn btn-outline-secondary btn-sm ms-2" id="copyOrphan">@((FA) ? "کپی" : "Copy")</button>
+                                                </div>
+
+                                                <div class="col-12 mt-3">
+                                                    <pre class="p-3 bg-dark text-light" id="previewOrphan"></pre>
+                                                    <div class="small text-muted">@((FA) ? "نکته: orphan یک شاخهٔ بدون تاریخچه می‌سازد." : "Note: orphan creates a branch without history.")</div>
+                                                </div>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div> <!-- end advanced -->
+                    </div> <!-- end tab-content for groups -->
+                </div> <!-- col-lg-8 -->
+                <!-- Right column: Help + quick tips -->
+                <div class="col-lg-4">
+                    <div class="card mb-3">
+                        <div class="card-body">
+                            <h5 class="card-title">@((FA) ? "نکات سریع" : "Quick Tips")</h5>
+                            <ul>
+                                <li>@((FA) ? "از amend فقط برای کامیت‌های محلی استفاده کنید." : "Use amend only for local commits.")</li>
+                                <li>@((FA) ? "برای بازگرداندن عمومی از revert استفاده کنید." : "Use revert for public history.")</li>
+                                <li>@((FA) ? "قبل از force، از push --force-with-lease استفاده کنید." : "Prefer push --force-with-lease over push --force.")</li>
+                                <li>@((FA) ? "پیام‌های کوتاه و بدنهٔ مفید بنویسید." : "Write concise headline and helpful body.")</li>
+                                <li>@((FA) ? "استفاده از Conventional Commits کمک می‌کند ابزارها را فعال کنید." : "Conventional Commits help automation.")</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-body">
+                            <h6>@((FA) ? "به‌سرعت کپی کن" : "Quick Copy")</h6>
+                            <button class="btn btn-outline-secondary w-100 mb-2" id="copyPreviewAll">@((FA) ? "کپی همه پیش‌نمایش‌ها" : "Copy current preview")</button>
+                            <small class="text-muted">@((FA) ? "کپی از پیش‌نمایش فعال" : "Copies the currently visible preview.")</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- GUIDE TAB -->
+        <div class="tab-pane fade" id="guide" role="tabpanel">
+            <div class="card p-3">
+                <div style="max-height:720px; overflow:auto;">
+                    @Html.Raw(guideHtml)
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Scripts: Bootstrap + logic -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+    (function(){
+        // helper: safe value fetch
+        function gv(form, name){ const el = form.querySelector('[name="'+name+'"]'); if(!el) return ''; if(el.type === 'checkbox') return el.checked ? 'on' : ''; return el.value || ''; }
+        function setText(id, txt){ const el = document.getElementById(id); if(el) el.textContent = txt; }
+
+        // copy util
+        async function copyText(text){
+            try { await navigator.clipboard.writeText(text); alert('Copied to clipboard'); }
+            catch(e){ prompt('Copy (fallback) — select and copy', text); }
+        }
+
+        // ==== CREATE
+        const formCreate = document.getElementById('formCreate');
+        const previewCreate = document.getElementById('previewCreate');
+        document.getElementById('genCreate').addEventListener('click', function(){
+            let cmd = 'git commit';
+            const messageFile = gv(formCreate,'messageFile');
+            const msg = gv(formCreate,'message');
+            if(gv(formCreate,'addAll')) cmd = 'git add -A && ' + cmd;
+            if(messageFile) cmd += ' -F ' + JSON.stringify(messageFile);
+            else if(msg) cmd += ' -m ' + JSON.stringify(msg);
+            else { if(gv(formCreate,'autoStage')) cmd = 'git add -A && ' + cmd; else cmd += ' --allow-empty'; }
+            if(gv(formCreate,'noVerify')) cmd += ' --no-verify';
+            const cleanup = gv(formCreate,'cleanup');
+            if(cleanup) cmd += ' --cleanup=' + cleanup;
+            setText('previewCreate', cmd);
+        });
+        document.getElementById('copyCreate').addEventListener('click', function(){ copyText(previewCreate.textContent); });
+
+        // Update live on input
+        formCreate.addEventListener('input', function(){ document.getElementById('genCreate').click(); });
+
+        // ==== PARTIAL
+        const formPartial = document.getElementById('formPartial');
+        const previewPartial = document.getElementById('previewPartial');
+        document.getElementById('genPartial').addEventListener('click', function(){
+            let files = gv(formPartial,'files');
+            let cmd = 'git add -p';
+            if(files) cmd += ' -- ' + files;
+            setText('previewPartial', cmd);
+        });
+        document.getElementById('copyPartial').addEventListener('click', function(){ copyText(previewPartial.textContent); });
+        formPartial.addEventListener('input', function(){ document.getElementById('genPartial').click(); });
+
+        // ==== EMPTY
+        const formEmpty = document.getElementById('formEmpty');
+        document.getElementById('genEmpty').addEventListener('click', function(){
+            let cmd = 'git commit';
+            const m = gv(formEmpty,'message');
+            if(gv(formEmpty,'allowEmpty')) cmd += ' --allow-empty';
+            if(m) cmd += ' -m ' + JSON.stringify(m);
+            setText('previewEmpty', cmd);
+        });
+        document.getElementById('copyEmpty').addEventListener('click', function(){ copyText(document.getElementById('previewEmpty').textContent); });
+        formEmpty.addEventListener('input', function(){ document.getElementById('genEmpty').click(); });
+
+        // ==== AMEND
+        const formAmend = document.getElementById('formAmend');
+        document.getElementById('genAmend').addEventListener('click', function(){
+            let cmd = 'git commit --amend';
+            const m = gv(formAmend,'amendMessage');
+            if(m) cmd += ' -m ' + JSON.stringify(m);
+            if(gv(formAmend,'noEdit')) cmd += ' --no-edit';
+            setText('previewAmend', cmd);
+        });
+        document.getElementById('copyAmend').addEventListener('click', function(){ copyText(document.getElementById('previewAmend').textContent); });
+        formAmend.addEventListener('input', function(){ document.getElementById('genAmend').click(); });
+
+        // ==== FIXUP
+        const formFixup = document.getElementById('formFixup');
+        document.getElementById('genFixup').addEventListener('click', function(){
+            let target = gv(formFixup,'fixupTarget');
+            if(!target){ setText('previewFixup','# ERROR: target commit required'); return; }
+            let cmd = 'git commit --fixup ' + target;
+            setText('previewFixup', cmd + '\n# then: git rebase -i --autosquash <base>');
+        });
+        document.getElementById('copyFixup').addEventListener('click', function(){ copyText(document.getElementById('previewFixup').textContent); });
+        formFixup.addEventListener('input', function(){ document.getElementById('genFixup').click(); });
+
+        // ==== SQUASH
+        const formSquash = document.getElementById('formSquash');
+        document.getElementById('genSquash').addEventListener('click', function(){
+            let target = gv(formSquash,'squashTarget');
+            let autosquash = gv(formSquash,'autosquash');
+            if(!target){ setText('previewSquash','# ERROR: target commit required'); return; }
+            let cmd = 'git rebase -i ' + target + '^';
+            if(autosquash) cmd += ' --autosquash';
+            setText('previewSquash', cmd);
+        });
+        document.getElementById('copySquash').addEventListener('click', function(){ copyText(document.getElementById('previewSquash').textContent); });
+        formSquash.addEventListener('input', function(){ document.getElementById('genSquash').click(); });
+
+        // ==== REVERT
+        const formRevert = document.getElementById('formRevert');
+        document.getElementById('genRevert').addEventListener('click', function(){
+            let commit = gv(formRevert,'revertCommit');
+            if(!commit){ setText('previewRevert','# ERROR: commit required'); return; }
+            let cmd = 'git revert ' + commit;
+            if(gv(formRevert,'revertNoEdit')) cmd += ' --no-edit';
+            setText('previewRevert', cmd);
+        });
+        document.getElementById('copyRevert').addEventListener('click', function(){ copyText(document.getElementById('previewRevert').textContent); });
+        formRevert.addEventListener('input', function(){ document.getElementById('genRevert').click(); });
+
+        // ==== RESET
+        const formReset = document.getElementById('formReset');
+        document.getElementById('genReset').addEventListener('click', function(){
+            const mode = gv(formReset,'resetMode') || 'mixed';
+            const target = gv(formReset,'resetTarget') || 'HEAD';
+            let cmd = 'git reset --' + mode + ' ' + target;
+            setText('previewReset', cmd);
+        });
+        document.getElementById('copyReset').addEventListener('click', function(){ copyText(document.getElementById('previewReset').textContent); });
+        formReset.addEventListener('input', function(){ document.getElementById('genReset').click(); });
+
+        // ==== RESTORE
+        const formRestore = document.getElementById('formRestore');
+        document.getElementById('genRestore').addEventListener('click', function(){
+            const files = gv(formRestore,'restoreFiles');
+            const from = gv(formRestore,'restoreFrom') || 'HEAD';
+            if(!files){ setText('previewRestore','# ERROR: files required'); return; }
+            let cmd = 'git restore --source ' + from + ' -- ' + files;
+            setText('previewRestore', cmd);
+        });
+        document.getElementById('copyRestore').addEventListener('click', function(){ copyText(document.getElementById('previewRestore').textContent); });
+        formRestore.addEventListener('input', function(){ document.getElementById('genRestore').click(); });
+
+        // ==== META
+        const formMeta = document.getElementById('formMeta');
+        document.getElementById('genMeta').addEventListener('click', function(){
+            let cmdBase = 'git commit';
+            const author = gv(formMeta,'metaAuthor');
+            const date = gv(formMeta,'metaDate');
+            const template = gv(formMeta,'metaTemplate');
+            const sign = gv(formMeta,'metaSign');
+            let cmd = cmdBase;
+            if(author) cmd += ' --author=' + JSON.stringify(author);
+            if(date) cmd += ' --date=' + JSON.stringify(date);
+            if(template) cmd += ' --template=' + JSON.stringify(template);
+            if(sign) cmd += ' -S';
+            setText('previewMeta', cmd);
+        });
+        document.getElementById('copyMeta').addEventListener('click', function(){ copyText(document.getElementById('previewMeta').textContent); });
+        formMeta.addEventListener('input', function(){ document.getElementById('genMeta').click(); });
+
+        // ==== SIGN
+        const formSign = document.getElementById('formSign');
+        document.getElementById('genSign').addEventListener('click', function(){
+            const type = gv(formSign,'signType');
+            const key = gv(formSign,'signKey');
+            let cmd = 'git commit -S';
+            if(key) cmd += ' -u ' + key;
+            setText('previewSign', cmd + ' # sign type: ' + type);
+        });
+        document.getElementById('copySign').addEventListener('click', function(){ copyText(document.getElementById('previewSign').textContent); });
+        formSign.addEventListener('input', function(){ document.getElementById('genSign').click(); });
+
+        // ==== COMMIT TREE
+        const formTree = document.getElementById('formCommitTree');
+        document.getElementById('genTree').addEventListener('click', function(){
+            const tree = gv(formTree,'treeHash');
+            const msg = gv(formTree,'treeMessage');
+            if(!tree){ setText('previewTree','# ERROR: tree hash required'); return; }
+            let cmd = 'echo ' + JSON.stringify(msg||'commit') + ' | git commit-tree ' + tree;
+            setText('previewTree', cmd);
+        });
+        document.getElementById('copyTree').addEventListener('click', function(){ copyText(document.getElementById('previewTree').textContent); });
+        formTree.addEventListener('input', function(){ document.getElementById('genTree').click(); });
+
+        // ==== ORPHAN
+        const formOrphan = document.getElementById('formOrphan');
+        document.getElementById('genOrphan').addEventListener('click', function(){
+            const name = gv(formOrphan,'orphanName') || 'new-root';
+            const createInitial = gv(formOrphan,'createInitial');
+            let cmd = 'git checkout --orphan ' + name;
+            if(createInitial) cmd += '\n# then create initial commit: git rm -rf . && git add . && git commit -m \"initial\"';
+            setText('previewOrphan', cmd);
+        });
+        document.getElementById('copyOrphan').addEventListener('click', function(){ copyText(document.getElementById('previewOrphan').textContent); });
+        formOrphan.addEventListener('input', function(){ document.getElementById('genOrphan').click(); });
+
+        // copy current preview button (right column)
+        document.getElementById('copyPreviewAll').addEventListener('click', function(){
+            // find the first visible preview under builder
+            const previews = ['previewCreate','previewPartial','previewEmpty','previewAmend','previewFixup','previewSquash','previewRevert','previewReset','previewRestore','previewMeta','previewSign','previewTree','previewOrphan'];
+            for(let id of previews){
+                const el = document.getElementById(id);
+                if(el && el.offsetParent !== null && el.textContent.trim()){
+                    copyText(el.textContent.trim());
+                    return;
+                }
+            }
+            alert('No preview available to copy.');
+        });
+
+        // initialize: trigger initial generation for each form so previews appear
+        document.querySelectorAll('button[id^=\"gen\"]').forEach(b => b.click());
+    })();
+</script>
+
+<style>
+    /* small cosmetic tweaks */
+    pre { white-space: pre-wrap; word-break: break-word; }
+    .nav-pills .nav-link { margin-right: .5rem; margin-bottom: .5rem; }
+</style>

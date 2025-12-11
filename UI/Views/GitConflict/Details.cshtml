@@ -1,0 +1,27 @@
+﻿@model Core.GitConflictModel.ConflictItem
+@{
+    var lang = System.Globalization.CultureInfo.CurrentCulture.TwoLetterISOLanguageName.ToUpper();
+    var FA = lang == "FA";
+}
+
+<div class="container py-5">
+    <a class="btn btn-secondary mb-3" href="@Url.Action("Index", "GitConflict")">
+        @(FA ? "بازگشت به لیست کانفلیکت‌ها" : "Back to Conflict List")
+    </a>
+
+    <div class="card shadow-sm">
+        <div class="card-header bg-primary text-white">
+            <h3>@Model.Type</h3>
+        </div>
+        <div class="card-body">
+            <h5>@(FA ? "سناریو / علت" : "Scenario / Cause")</h5>
+            <p>@Model.Scenario</p>
+
+            <h5>@(FA ? "راه حل" : "Solution")</h5>
+            <pre>@Model.Solution</pre>
+
+            <h5>@(FA ? "نکات حرفه‌ای" : "Notes")</h5>
+            <p>@Model.Notes</p>
+        </div>
+    </div>
+</div>

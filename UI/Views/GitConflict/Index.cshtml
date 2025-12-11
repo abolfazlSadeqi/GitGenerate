@@ -1,0 +1,75 @@
+﻿@using Core
+@model GitConflictModel
+@{
+    var lang = System.Globalization.CultureInfo.CurrentCulture.TwoLetterISOLanguageName.ToUpper();
+    var FA = lang == "FA";
+}
+
+<div class="container py-5">
+    <h1 class="text-center mb-4 text-primary">@((FA) ? Model.TitleFa : Model.TitleEn)</h1>
+
+    <ul class="nav nav-tabs mb-3">
+        <li class="nav-item">
+            <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#guide">@((FA) ? "راهنما" : "Guide")</button>
+        </li>
+        <li class="nav-item">
+            <button class="nav-link" data-bs-toggle="tab" data-bs-target="#examples">@((FA) ? "مثال‌ها" : "Examples")</button>
+        </li>
+    </ul>
+
+    <div class="tab-content">
+        <div class="tab-pane fade show active" id="guide">
+            <div class="p-4 bg-light rounded" style="max-height:600px; overflow:auto;">
+                <table class="table table-bordered table-hover">
+                    <thead class="table-primary">
+                        <tr>
+                            <th>@(FA ? "نوع کانفلیکت" : "Conflict Type")</th>
+                            <th>@(FA ? "سناریو / علت" : "Scenario / Cause")</th>
+                            <th>@(FA ? "جزئیات" : "Details")</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var c in Model.Conflicts)
+                        {
+                            <tr>
+                                <td>@c.Type</td>
+                                <td>@c.Scenario</td>
+                           
+                                <td>
+                                    <a href="@Url.Action("Details", "GitConflict", new { type = c.Type })">
+                                        @c.Type
+                                    </a>
+                                </td>
+
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="tab-pane fade" id="examples">
+            <div class="p-4 bg-light rounded" style="max-height:600px; overflow:auto;">
+                <h3>@(FA ? "نمونه عملی Cherry-pick" : "Practical Cherry-pick Example")</h3>
+                <p>@(FA ? "انتقال یک commit از develop به stage و رفع کانفلیکت" : "Pick a commit from develop to stage and resolve conflicts")</p>
+                <pre>
+# رفتن به branch مقصد
+git checkout stage
+
+# پیدا کردن commit مورد نظر از develop
+git log develop
+
+# cherry-pick commit
+git cherry-pick abc1234
+
+# در صورت وجود conflict
+git add .
+git cherry-pick --continue
+
+# لغو cherry-pick
+git cherry-pick --abort
+                </pre>
+            </div>
+        </div>
+    </div>
+</div>

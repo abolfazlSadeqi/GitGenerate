@@ -1,0 +1,46 @@
+﻿@using Core
+@using System.Globalization
+@model GitBestPracticeModel
+@{
+    var lang = CultureInfo.CurrentCulture.TwoLetterISOLanguageName.ToUpper();
+    var FA = lang == "FA";
+    var tabs = FA ? Model.TabsFa : Model.TabsEn;
+    var content = FA ? Model.ContentFa : Model.ContentEn;
+}
+
+<div class="container py-5">
+    <h1 class="text-center mb-4 fw-bold text-primary">
+        @(FA? Model.TitleFa: Model.TitleEn)
+    </h1>
+
+    <p class="lead mb-4">
+        @Html.Raw(FA ? Model.OverviewFa : Model.OverviewEn)
+    </p>
+    <ul class="nav nav-tabs">
+        @for (int i = 0; i < tabs.Length; i++)
+        {
+            var tabId = $"tab{i}";  // درست کردن ID معتبر
+                                    <li class="nav-item">
+                                        <button class="nav-link @(i == 0 ? "active" : "")"
+                                                data-bs-toggle="tab"
+                                                data-bs-target="#@tabId"
+                                                type="button">
+                                            @tabs[i]
+                                        </button>
+                                    </li>
+        }
+    </ul>
+
+    <div class="tab-content mt-4">
+        @for (int i = 0; i < tabs.Length; i++)
+        {
+            var tabId = $"tab{i}";
+            <div class="tab-pane fade @(i == 0 ? "show active" : "")" id="@tabId">
+                <div class="p-4 bg-light rounded shadow-sm" style="line-height:1.9;">
+                    @Html.Raw(content[tabs[i]])
+                </div>
+            </div>
+        }
+    </div>
+
+</div>

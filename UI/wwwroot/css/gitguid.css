@@ -1,0 +1,169 @@
+﻿:root {
+    --bg: #f4f6f9;
+    --card: #fff;
+    --muted: #6c757d;
+    --accent: #0d6efd;
+    --graph-node: #0d6efd;
+    --graph-node-stroke: #07316a;
+    --text: #111;
+}
+
+[data-theme="dark"] {
+    --bg: #0b1220;
+    --card: #0f1724;
+    --muted: #9aa4b2;
+    --accent: #4f9cff;
+    --graph-node: #4f9cff;
+    --graph-node-stroke: #082135;
+    --text: #e6eef8;
+}
+
+html, body {
+    height: 100%;
+    background: var(--bg);
+    color: var(--text);
+}
+
+.container-root {
+    padding: 24px;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.topbar {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 18px;
+}
+
+.brand {
+    font-weight: 700;
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+.toggle-theme {
+    cursor: pointer;
+}
+
+.card-deep {
+    background: var(--card);
+    border-radius: 12px;
+    padding: 18px;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.06);
+}
+
+/* tabs */
+.nav-tabs .nav-link {
+    color: var(--muted);
+    font-weight: 600;
+}
+
+.tab-pane {
+    padding-top: 12px;
+}
+
+/* graph */
+.graph-wrap {
+    border-radius: 10px;
+    overflow: hidden;
+    border: 1px solid rgba(0,0,0,0.06);
+    background: linear-gradient(180deg, rgba(255,255,255,0.02), transparent);
+}
+
+#gitCanvas {
+    width: 100%;
+    height: 420px;
+    display: block;
+}
+
+.controls {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-bottom: 10px;
+}
+
+.cli-area {
+    background: #0b1220;
+    color: #dbeafe;
+    padding: 12px;
+    border-radius: 8px;
+    font-family: monospace;
+    min-height: 120px;
+}
+
+[data-theme="dark"] .cli-area {
+    background: #071024;
+    color: #cfe8ff;
+}
+
+.cli-input {
+    width: 100%;
+    margin-top: 8px;
+    display: flex;
+    gap: 8px;
+}
+
+    .cli-input input {
+        flex: 1;
+    }
+
+/* small helpers */
+.chip {
+    display: inline-block;
+    padding: 6px 10px;
+    border-radius: 999px;
+    background: rgba(13,110,253,0.08);
+    color: var(--accent);
+    font-weight: 600;
+    margin-right: 6px;
+}
+
+/* rtl tweaks */
+html[dir="rtl"] .topbar {
+    direction: rtl;
+}
+
+html[dir="rtl"] .chip {
+    margin-left: 6px;
+    margin-right: 0;
+}
+
+/* responsive */
+@media (max-width:768px) {
+    #gitCanvas {
+        height: 320px;
+    }
+
+    .container-root {
+        padding: 12px;
+    }
+}
+
+/* legend */
+.legend {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-top: 8px;
+}
+
+    .legend .item {
+        display: flex;
+        gap: 8px;
+        align-items: center;
+        font-size: 13px;
+        color: var(--muted);
+    }
+
+    .legend .swatch {
+        width: 14px;
+        height: 14px;
+        border-radius: 4px;
+        background: var(--graph-node);
+        box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+    }

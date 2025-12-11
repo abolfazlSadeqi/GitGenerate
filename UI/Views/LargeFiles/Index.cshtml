@@ -1,0 +1,22 @@
+﻿@using Core
+@model LargeFilesModel
+@{
+    var lang = System.Globalization.CultureInfo.CurrentCulture.TwoLetterISOLanguageName.ToUpper();
+    var FA = lang == "FA";
+}
+
+<div class="container py-5">
+    <h1 class="text-center mb-4 text-primary">@((FA) ? Model.TitleFa : Model.TitleEn)</h1>
+
+    <ul class="nav nav-tabs">
+        <li class="nav-item"><button class="nav-link active" data-bs-toggle="tab" data-bs-target="#guide">@((FA) ? "راهنما" : "Guide")</button></li>
+    </ul>
+
+    <div class="tab-content mt-4">
+        <div class="tab-pane fade show active" id="guide">
+            <div class="p-3 bg-light rounded" style="max-height:700px;overflow:auto;">
+                @Html.Raw(FA ? Model.GuideHtmlFa : Model.GuideHtmlEn)
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,42 @@
+﻿@using Core
+@model GitScriptsModel
+
+<div class="container py-5">
+    <h1 class="text-center mb-4 text-primary">@Model.TitleEn</h1>
+
+    <ul class="nav nav-tabs flex-wrap">
+        @foreach (var tab in Model.Tabs)
+        {
+            <li class="nav-item">
+                <button class="nav-link @(tab == Model.Tabs.First() ? "active" : "")" data-bs-toggle="tab" data-bs-target="#@tab.Id">
+                    @tab.TitleEn
+                </button>
+            </li>
+        }
+    </ul>
+
+    <div class="tab-content mt-4">
+        @foreach (var tab in Model.Tabs)
+        {
+            <div class="tab-pane fade @(tab == Model.Tabs.First() ? "show active" : "")" id="@tab.Id">
+                <div class="p-3 bg-light rounded" style="overflow:auto; max-height:700px;">
+                    @Html.Raw(tab.ContentEn)
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        document.addEventListener('DOMContentLoaded', function(){
+            const tabs = document.querySelectorAll('.nav-link');
+            tabs.forEach(tab => {
+                tab.addEventListener('click', function(){
+                    tabs.forEach(t => t.classList.remove('active'));
+                    this.classList.add('active');
+                });
+            });
+        });
+    </script>
+}

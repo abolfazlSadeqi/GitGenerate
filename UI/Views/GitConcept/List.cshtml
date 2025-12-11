@@ -1,0 +1,75 @@
+﻿@using Service.Services
+@model List<GitConcept>
+@using System.Globalization
+
+@{
+    var currentLang = CultureInfo.CurrentCulture.TwoLetterISOLanguageName == "fa" ? Language.Fa : Language.En;
+}
+
+<div class="container my-5">
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="fw-bold text-primary">Git Concepts — @ViewBag.Category</h2>
+    </div>
+
+    <div class="row g-4">
+
+        @foreach (var c in Model)
+        {
+            <div class="col-md-6 col-lg-4">
+                <a asp-action="Detail" asp-route-key="@c.Key" class="text-decoration-none text-dark">
+                    <div class="card concept-card shadow-sm border-0 h-100 rounded-4">
+
+                        <div class="card-body">
+                            <h5 class="fw-bold text-primary">
+                                @(c.Title.ContainsKey(currentLang) ? c.Title[currentLang] : c.Title[Language.En])
+                            </h5>
+
+                            <p class="text-muted mt-2">
+                                @{
+                                    var desc = c.Description.ContainsKey(currentLang)
+                                    ? c.Description[currentLang]
+                                    : c.Description[Language.En];
+
+                                    var cleaned = System.Text.RegularExpressions.Regex.Replace(desc, "<.*?>", " ");
+                                    var preview = cleaned.Length > 140 ? cleaned.Substring(0, 140) + "..." : cleaned;
+                                }
+
+                                @preview
+                            </p>
+                        </div>
+
+                        <div class="card-footer bg-transparent border-0 text-end">
+                            <span class="text-primary fw-semibold small">Read more →</span>
+                        </div>
+
+                    </div>
+                </a>
+            </div>
+        }
+
+    </div>
+
+</div>
+
+<style>
+    .concept-card {
+        transition: .25s ease;
+        background: #ffffff;
+    }
+
+        .concept-card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.12);
+        }
+
+        .concept-card h5 {
+            min-height: 48px;
+        }
+
+        .concept-card p {
+            font-size: 0.93rem;
+            line-height: 1.6;
+            min-height: 60px;
+        }
+</style>
